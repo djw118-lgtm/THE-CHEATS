@@ -1,0 +1,580 @@
+import React, { useState } from 'react';
+import { Search, TrendingUp, TrendingDown, Repeat, Menu, X } from 'lucide-react';
+
+const LotteryApp = () => {
+  const [currentPage, setCurrentPage] = useState('landing');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedRange, setSelectedRange] = useState(null);
+  const [selectedNumber, setSelectedNumber] = useState(null);
+  const [gameType, setGameType] = useState(null);
+
+  const stats = {
+    droughtCount: gameType === 'pick4' ? 1800 : 200,
+    topDroughts: gameType === 'pick4' 
+      ? [
+          { number: '1111', days: 817 },
+          { number: '3333', days: 687 },
+          { number: '5678', days: 612 }
+        ]
+      : [
+          { number: '111', days: 417 },
+          { number: '333', days: 387 },
+          { number: '567', days: 312 }
+        ],
+    topStreaks: gameType === 'pick4'
+      ? [
+          { number: '2468', hits: 5, days: 45 },
+          { number: '7890', hits: 4, days: 21 },
+          { number: '1357', hits: 3, days: 14 }
+        ]
+      : [
+          { number: '246', hits: 5, days: 45 },
+          { number: '789', hits: 4, days: 21 },
+          { number: '135', hits: 3, days: 14 }
+        ],
+    topRepeats: gameType === 'pick4'
+      ? [
+          { number: '3692', pattern: '3 times in 7 days' },
+          { number: '7777', pattern: 'Back-to-back' },
+          { number: '5555', pattern: 'Twice same day' }
+        ]
+      : [
+          { number: '369', pattern: '3 times in 7 days' },
+          { number: '777', pattern: 'Back-to-back' },
+          { number: '555', pattern: 'Twice same day' }
+        ]
+  };
+
+  const getMissingNumbers = (start, end) => {
+    const missing = [];
+    const digits = gameType === 'pick3' ? 3 : 4;
+    const maxNumbers = gameType === 'pick3' ? 100 : 100;
+    
+    for (let i = start; i < start + maxNumbers && i <= end; i++) {
+      if (Math.random() > 0.1) {
+        missing.push(i.toString().padStart(digits, '0'));
+      }
+    }
+    return missing;
+  };
+
+  const NavBar = () => (
+    <nav className="bg-gray-900 text-white shadow-lg">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center space-x-8">
+            <h1 className="text-2xl font-bold text-yellow-400">THE CHEATS</h1>
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="flex bg-gray-800 rounded-lg p-1">
+                <button
+                  onClick={() => setGameType('pick3')}
+                  className={`px-4 py-1 rounded transition ${gameType === 'pick3' ? 'bg-yellow-400 text-gray-900 font-bold' : 'text-gray-300 hover:text-white'}`}
+                >
+                  Pick 3
+                </button>
+                <button
+                  onClick={() => setGameType('pick4')}
+                  className={`px-4 py-1 rounded transition ${gameType === 'pick4' ? 'bg-yellow-400 text-gray-900 font-bold' : 'text-gray-300 hover:text-white'}`}
+                >
+                  Pick 4
+                </button>
+              </div>
+              <div className="h-6 w-px bg-gray-700"></div>
+              <button onClick={() => setCurrentPage('gaps')} className={`hover:text-yellow-400 transition ${currentPage === 'gaps' ? 'text-yellow-400' : ''}`}>GAPS</button>
+              <button onClick={() => setCurrentPage('streaks')} className={`hover:text-yellow-400 transition ${currentPage === 'streaks' ? 'text-yellow-400' : ''}`}>STREAKS</button>
+              <button onClick={() => setCurrentPage('repeats')} className={`hover:text-yellow-400 transition ${currentPage === 'repeats' ? 'text-yellow-400' : ''}`}>REPEATS</button>
+              <button onClick={() => setCurrentPage(gameType === 'pick4' ? 'quads' : 'triples')} className={`hover:text-yellow-400 transition ${(currentPage === 'quads' || currentPage === 'triples') ? 'text-yellow-400' : ''}`}>
+                {gameType === 'pick4' ? 'QUAD WATCH' : 'TRIPLE WATCH'}
+              </button>
+              <button onClick={() => setCurrentPage('calculator')} className={`hover:text-yellow-400 transition ${currentPage === 'calculator' ? 'text-yellow-400' : ''}`}>CALCULATOR</button>
+              <div className="h-6 w-px bg-gray-700"></div>
+              <button onClick={() => { setGameType(null); setCurrentPage('landing'); }} className="hover:text-yellow-400 transition text-gray-400">HOME</button>
+            </div>
+          </div>
+          <div className="hidden md:block">
+            <button className="bg-yellow-400 text-gray-900 px-6 py-2 rounded-lg font-bold hover:bg-yellow-300 transition">
+              UPGRADE - $9.99/mo
+            </button>
+          </div>
+          <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-gray-800 px-4 py-4 space-y-3">
+          <div className="flex gap-2 mb-3">
+            <button
+              onClick={() => setGameType('pick3')}
+              className={`flex-1 py-2 rounded transition ${gameType === 'pick3' ? 'bg-yellow-400 text-gray-900 font-bold' : 'bg-gray-700 text-white'}`}
+            >
+              Pick 3
+            </button>
+            <button
+              onClick={() => setGameType('pick4')}
+              className={`flex-1 py-2 rounded transition ${gameType === 'pick4' ? 'bg-yellow-400 text-gray-900 font-bold' : 'bg-gray-700 text-white'}`}
+            >
+              Pick 4
+            </button>
+          </div>
+          <button onClick={() => { setCurrentPage('gaps'); setMobileMenuOpen(false); }} className="block w-full text-left py-2">GAPS</button>
+          <button onClick={() => { setCurrentPage('streaks'); setMobileMenuOpen(false); }} className="block w-full text-left py-2">STREAKS</button>
+          <button onClick={() => { setCurrentPage('repeats'); setMobileMenuOpen(false); }} className="block w-full text-left py-2">REPEATS</button>
+          <button onClick={() => { setCurrentPage(gameType === 'pick4' ? 'quads' : 'triples'); setMobileMenuOpen(false); }} className="block w-full text-left py-2">
+            {gameType === 'pick4' ? 'QUAD WATCH' : 'TRIPLE WATCH'}
+          </button>
+          <button onClick={() => { setCurrentPage('calculator'); setMobileMenuOpen(false); }} className="block w-full text-left py-2">CALCULATOR</button>
+          <div className="border-t border-gray-700 my-3"></div>
+          <button onClick={() => { setGameType(null); setCurrentPage('landing'); setMobileMenuOpen(false); }} className="block w-full text-left py-2 text-gray-400 hover:text-yellow-400">HOME</button>
+        </div>
+      )}
+    </nav>
+  );
+
+  const LandingPage = () => {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 py-12">
+        <div className="max-w-5xl w-full space-y-10">
+          <div className="text-center">
+            <h1 className="text-5xl md:text-7xl font-bold text-blue-500 mb-4">THE CHEATS</h1>
+            <p className="text-gray-400 text-lg">The Cliff Notes for the Lottery</p>
+          </div>
+
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-8 md:p-10 text-gray-900 shadow-2xl">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Not Just What Hit Today, But What Hasn't Hit</h2>
+            <p className="text-xl md:text-2xl mb-2">Not just history, but GAPS, STREAKS, and REPEATS</p>
+            <p className="text-lg md:text-xl italic">Something players can argue over - with FACTS instead of memory</p>
+          </div>
+
+          <div className="bg-gray-800 rounded-xl p-8 md:p-10 border border-gray-700">
+            <h3 className="text-2xl font-bold text-white mb-6 text-center">What THE CHEATS Tracks</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="bg-red-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl font-bold text-white">G</span>
+                </div>
+                <h4 className="text-xl font-bold text-yellow-400 mb-2">GAPS</h4>
+                <p className="text-gray-300">Numbers that haven't hit</p>
+                <p className="text-gray-400 text-sm mt-1">(the droughts)</p>
+              </div>
+
+              <div className="text-center">
+                <div className="bg-green-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl font-bold text-white">S</span>
+                </div>
+                <h4 className="text-xl font-bold text-yellow-400 mb-2">STREAKS</h4>
+                <p className="text-gray-300">Numbers hitting frequently</p>
+                <p className="text-gray-400 text-sm mt-1">(the hot numbers)</p>
+              </div>
+
+              <div className="text-center">
+                <div className="bg-blue-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl font-bold text-white">R</span>
+                </div>
+                <h4 className="text-xl font-bold text-yellow-400 mb-2">REPEATS</h4>
+                <p className="text-gray-300">Numbers hitting multiple times</p>
+                <p className="text-gray-400 text-sm mt-1">(back-to-back, same day)</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <button onClick={() => { setGameType('pick4'); setCurrentPage('gaps'); }} className="bg-gray-800 border-2 border-gray-700 rounded-lg p-4 text-white hover:border-yellow-400 transition">
+              THE GAPS
+            </button>
+            <button onClick={() => { setGameType('pick4'); setCurrentPage('streaks'); }} className="bg-gray-800 border-2 border-gray-700 rounded-lg p-4 text-white hover:border-yellow-400 transition">
+              THE STREAKS
+            </button>
+            <button onClick={() => { setGameType('pick4'); setCurrentPage('repeats'); }} className="bg-gray-800 border-2 border-gray-700 rounded-lg p-4 text-white hover:border-yellow-400 transition">
+              THE REPEATS
+            </button>
+            <button onClick={() => { setGameType('pick4'); setCurrentPage('quads'); }} className="bg-gray-800 border-2 border-gray-700 rounded-lg p-4 text-white hover:border-yellow-400 transition">
+              QUAD WATCH
+            </button>
+            <button onClick={() => { setGameType('pick4'); setCurrentPage('calculator'); }} className="bg-gray-800 border-2 border-gray-700 rounded-lg p-4 text-white hover:border-yellow-400 transition">
+              CALCULATOR
+            </button>
+            <button onClick={() => setGameType('pick3')} className="bg-gray-800 border-2 border-gray-700 rounded-lg p-4 text-white hover:border-yellow-400 transition">
+              PICK 3
+            </button>
+            <button onClick={() => setGameType('pick4')} className="bg-gray-800 border-2 border-gray-700 rounded-lg p-4 text-white hover:border-yellow-400 transition">
+              PICK 4
+            </button>
+          </div>
+
+          <div className="text-center">
+            <input
+              type="text"
+              placeholder="SEARCH"
+              className="w-full md:w-96 px-6 py-4 bg-gray-800 border-2 border-gray-700 rounded-xl text-white text-xl placeholder-gray-500 focus:outline-none focus:border-yellow-400"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const CalculatorPage = () => {
+    const [calcGameType, setCalcGameType] = useState(gameType || 'pick4');
+    const [betAmount, setBetAmount] = useState(1);
+    const [withFireball, setWithFireball] = useState(false);
+    const [playsPerDay, setPlaysPerDay] = useState(2);
+    const [timePeriod, setTimePeriod] = useState(30);
+    
+    const totalCostPerPlay = withFireball ? betAmount * 2 : betAmount;
+    const dailyCost = totalCostPerPlay * playsPerDay;
+    const totalSpend = dailyCost * timePeriod;
+    const straightPayout = calcGameType === 'pick4' ? 5000 : 500;
+    const fireballPayout = calcGameType === 'pick4' ? 750 : 100;
+    const winnings = withFireball ? (straightPayout + fireballPayout) * betAmount : straightPayout * betAmount;
+    const profit = winnings - totalSpend;
+    const breakEvenDays = Math.ceil(winnings / dailyCost);
+    
+    return (
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <h2 className="text-3xl font-bold mb-6">ROI Calculator</h2>
+        <div className="grid md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label className="block text-sm font-bold mb-2">Game Type</label>
+            <div className="flex gap-4">
+              <button onClick={() => setCalcGameType('pick3')} className={`flex-1 py-3 rounded-lg font-semibold ${calcGameType === 'pick3' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>Pick 3</button>
+              <button onClick={() => setCalcGameType('pick4')} className={`flex-1 py-3 rounded-lg font-semibold ${calcGameType === 'pick4' ? 'bg-purple-600 text-white' : 'bg-gray-200'}`}>Pick 4</button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Bet Amount</label>
+            <select value={betAmount} onChange={(e) => setBetAmount(Number(e.target.value))} className="w-full p-3 border rounded-lg">
+              <option value={0.5}>$0.50</option>
+              <option value={1}>$1.00</option>
+              <option value={2}>$2.00</option>
+              <option value={5}>$5.00</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">With Fireball?</label>
+            <div className="flex gap-4">
+              <button onClick={() => setWithFireball(false)} className={`flex-1 py-3 rounded-lg font-semibold ${!withFireball ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>No</button>
+              <button onClick={() => setWithFireball(true)} className={`flex-1 py-3 rounded-lg font-semibold ${withFireball ? 'bg-orange-600 text-white' : 'bg-gray-200'}`}>Yes</button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Plays Per Day</label>
+            <select value={playsPerDay} onChange={(e) => setPlaysPerDay(Number(e.target.value))} className="w-full p-3 border rounded-lg">
+              <option value={1}>Once</option>
+              <option value={2}>Twice</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">Time Period</label>
+            <select value={timePeriod} onChange={(e) => setTimePeriod(Number(e.target.value))} className="w-full p-3 border rounded-lg">
+              <option value={30}>30 Days</option>
+              <option value={60}>60 Days</option>
+              <option value={90}>90 Days</option>
+              <option value={180}>6 Months</option>
+              <option value={365}>1 Year</option>
+            </select>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+            <p className="text-sm text-gray-600">Total Spend</p>
+            <p className="text-3xl font-bold text-red-700">${totalSpend.toFixed(2)}</p>
+          </div>
+          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+            <p className="text-sm text-gray-600">Potential Win</p>
+            <p className="text-3xl font-bold text-green-700">${winnings.toLocaleString()}</p>
+          </div>
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <p className="text-sm text-gray-600">Profit After 1 Hit</p>
+            <p className="text-3xl font-bold text-blue-700">${profit.toLocaleString()}</p>
+          </div>
+          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <p className="text-sm text-gray-600">Break-Even</p>
+            <p className="text-3xl font-bold text-purple-700">{breakEvenDays} days</p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const GapsPage = () => (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="flex gap-4 mb-4">
+          <button onClick={() => setCurrentPage('landing')} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition">← Back</button>
+          <button onClick={() => { setGameType(null); setCurrentPage('landing'); }} className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">HOME</button>
+        </div>
+        <h2 className="text-3xl font-bold mb-6">GAPS - Numbers That Haven't Hit</h2>
+        
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 mb-6">
+          <p className="text-2xl font-bold text-gray-900 mb-2">{stats.droughtCount.toLocaleString()} numbers are currently in a drought</p>
+          <p className="text-sm text-gray-600">Since January 1, 2025</p>
+        </div>
+
+        <div className="mb-6">
+          <h3 className="text-xl font-bold mb-4">Top 3 Longest Droughts</h3>
+          <div className="space-y-3">
+            {stats.topDroughts.map((item, idx) => (
+              <div key={idx} onClick={() => setSelectedNumber(item.number)} className="bg-red-50 border border-red-200 rounded-lg p-4 flex justify-between items-center hover:bg-red-100 cursor-pointer transition">
+                <div>
+                  <span className="text-2xl font-bold text-red-700">{item.number}</span>
+                  <span className="ml-4 text-gray-600">#{idx + 1}</span>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-red-600">{item.days}</p>
+                  <p className="text-sm text-gray-600">days</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t pt-6">
+          <div className="flex items-center gap-4 mb-4">
+            <Search className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search for a number"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <h3 className="text-xl font-bold mb-4">Browse by Range</h3>
+          {!selectedRange ? (
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {[...Array(10)].map((_, i) => {
+                const rangeSize = gameType === 'pick4' ? 1000 : 100;
+                const digits = gameType === 'pick4' ? 4 : 3;
+                const start = i * rangeSize;
+                const end = start + rangeSize - 1;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedRange({ start, end })}
+                    className="bg-gray-100 hover:bg-yellow-100 border border-gray-300 rounded-lg p-4 text-center transition"
+                  >
+                    <p className="font-bold text-lg">{start.toString().padStart(digits, '0')} - {end.toString().padStart(digits, '0')}</p>
+                    <p className="text-sm text-gray-600 mt-1">~{Math.floor(stats.droughtCount / 10)} missing</p>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div>
+              <div className="flex gap-4 mb-4">
+                <button
+                  onClick={() => setSelectedRange(null)}
+                  className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition"
+                >
+                  ← Back to Ranges
+                </button>
+                <button onClick={() => { setGameType(null); setCurrentPage('landing'); }} className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">HOME</button>
+              </div>
+              <h4 className="text-lg font-bold mb-4">
+                Missing Numbers: {selectedRange.start.toString().padStart(gameType === 'pick4' ? 4 : 3, '0')} - {selectedRange.end.toString().padStart(gameType === 'pick4' ? 4 : 3, '0')}
+              </h4>
+              <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
+                {getMissingNumbers(selectedRange.start, selectedRange.end).map((num, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => setSelectedNumber(num)}
+                    className="bg-gray-100 hover:bg-yellow-100 p-3 rounded text-center font-mono text-sm cursor-pointer transition border border-gray-300"
+                  >
+                    {num}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const StreaksPage = () => (
+    <div className="bg-white rounded-xl shadow-lg p-6">
+      <div className="flex gap-4 mb-4">
+        <button onClick={() => setCurrentPage('gaps')} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition">← Back</button>
+        <button onClick={() => { setGameType(null); setCurrentPage('landing'); }} className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">HOME</button>
+      </div>
+      <h2 className="text-3xl font-bold mb-6">STREAKS - Hot Numbers</h2>
+      <div className="bg-green-50 border-l-4 border-green-400 p-6 mb-6">
+        <p className="text-2xl font-bold text-gray-900">23 active streaks</p>
+      </div>
+      <div className="space-y-3">
+        {stats.topStreaks.map((item, idx) => (
+          <div key={idx} onClick={() => setSelectedNumber(item.number)} className="bg-green-50 border border-green-200 rounded-lg p-4 hover:bg-green-100 cursor-pointer transition">
+            <div className="flex justify-between items-center">
+              <span className="text-2xl font-bold text-green-700">{item.number}</span>
+              <div className="text-right">
+                <p className="text-xl font-bold text-green-600">{item.hits} hits</p>
+                <p className="text-sm text-gray-600">in {item.days} days</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const RepeatsPage = () => (
+    <div className="bg-white rounded-xl shadow-lg p-6">
+      <div className="flex gap-4 mb-4">
+        <button onClick={() => setCurrentPage('gaps')} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition">← Back</button>
+        <button onClick={() => { setGameType(null); setCurrentPage('landing'); }} className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">HOME</button>
+      </div>
+      <h2 className="text-3xl font-bold mb-6">REPEATS - Multiple Hits</h2>
+      <div className="bg-purple-50 border-l-4 border-purple-400 p-6 mb-6">
+        <p className="text-2xl font-bold text-gray-900">47 numbers have repeated</p>
+      </div>
+      <div className="space-y-3">
+        {stats.topRepeats.map((item, idx) => (
+          <div key={idx} onClick={() => setSelectedNumber(item.number)} className="bg-purple-50 border border-purple-200 rounded-lg p-4 hover:bg-purple-100 cursor-pointer transition">
+            <div className="flex justify-between items-center">
+              <span className="text-2xl font-bold text-purple-700">{item.number}</span>
+              <span className="text-gray-700">{item.pattern}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const TripleWatchPage = () => (
+    <div className="bg-white rounded-xl shadow-lg p-6">
+      <div className="flex gap-4 mb-4">
+        <button onClick={() => setCurrentPage('gaps')} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition">← Back</button>
+        <button onClick={() => { setGameType(null); setCurrentPage('landing'); }} className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">HOME</button>
+      </div>
+      <h2 className="text-3xl font-bold mb-6">TRIPLE WATCH</h2>
+      <div className="space-y-3">
+        {['111', '333', '777', '222', '555', '999', '444', '666', '888', '000'].map((triple, idx) => {
+          const days = [417, 387, 312, 189, 145, 98, 76, 63, 47, 22][idx];
+          return (
+            <div 
+              key={triple} 
+              onClick={() => setSelectedNumber(triple)}
+              className="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:bg-yellow-50 cursor-pointer transition"
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-500 font-bold">#{idx + 1}</span>
+                  <span className="text-3xl font-bold">{triple}</span>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-blue-600">{days} days</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const QuadWatchPage = () => (
+    <div className="bg-white rounded-xl shadow-lg p-6">
+      <div className="flex gap-4 mb-4">
+        <button onClick={() => setCurrentPage('gaps')} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition">← Back</button>
+        <button onClick={() => { setGameType(null); setCurrentPage('landing'); }} className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">HOME</button>
+      </div>
+      <h2 className="text-3xl font-bold mb-6">QUAD WATCH</h2>
+      <div className="space-y-3">
+        {['1111', '3333', '7777', '2222', '5555', '9999', '4444', '6666', '8888', '0000'].map((quad, idx) => {
+          const days = [817, 687, 512, 289, 245, 198, 156, 123, 87, 42][idx];
+          return (
+            <div 
+              key={quad} 
+              onClick={() => setSelectedNumber(quad)}
+              className="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:bg-yellow-50 cursor-pointer transition"
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-500 font-bold">#{idx + 1}</span>
+                  <span className="text-3xl font-bold">{quad}</span>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-blue-600">{days} days</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const NumberDetailPage = () => {
+    const number = selectedNumber;
+    const seed = parseInt(number);
+    const randomInRange = (min, max, offset = 0) => min + ((seed + offset) % (max - min));
+    const daysAgo = randomInRange(20, 600, 1);
+    
+    return (
+      <div className="space-y-6">
+        <div className="flex gap-4">
+          <button onClick={() => setSelectedNumber(null)} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition">← Back</button>
+          <button onClick={() => { setGameType(null); setCurrentPage('landing'); }} className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition">HOME</button>
+        </div>
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="text-center mb-8">
+            <h1 className="text-6xl font-bold text-gray-900 mb-4">{number}</h1>
+            <div className="inline-block bg-red-100 border-2 border-red-400 rounded-lg px-6 py-3">
+              <p className="text-3xl font-bold text-red-700">{daysAgo} days</p>
+              <p className="text-sm text-gray-600">Current drought</p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <p className="text-sm text-gray-600 mb-1">Last Hit</p>
+              <p className="text-2xl font-bold text-blue-700">March 15, 2025</p>
+              <p className="text-sm text-gray-600">Evening draw</p>
+            </div>
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <p className="text-sm text-gray-600 mb-1">Total Hits (2024)</p>
+              <p className="text-2xl font-bold text-green-700">5 times</p>
+              <p className="text-sm text-gray-600">Last year</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {gameType && <NavBar />}
+      {currentPage === 'landing' ? (
+        <LandingPage />
+      ) : (
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          {selectedNumber ? (
+            <NumberDetailPage />
+          ) : (
+            <>
+              {currentPage === 'gaps' && <GapsPage />}
+              {currentPage === 'streaks' && <StreaksPage />}
+              {currentPage === 'repeats' && <RepeatsPage />}
+              {currentPage === 'quads' && <QuadWatchPage />}
+              {currentPage === 'triples' && <TripleWatchPage />}
+              {currentPage === 'calculator' && <CalculatorPage />}
+            </>
+          )}
+        </div>
+      )}
+      {gameType && (
+        <footer className="bg-gray-900 text-white mt-16 py-8">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            <p className="text-xl font-bold text-yellow-400">THE CHEATS</p>
+            <p className="text-sm text-gray-400">The Cliff Notes for the Lottery</p>
+          </div>
+        </footer>
+      )}
+    </div>
+  );
+};
+
+export default LotteryApp;
