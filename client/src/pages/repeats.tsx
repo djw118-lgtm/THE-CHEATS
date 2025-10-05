@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Repeat } from "lucide-react";
 import NumberDetailModal from "@/components/NumberDetailModal";
 
 export default function RepeatsPage() {
   const { gameType, repeats, stats, isLoading } = useLotteryData();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("occurrences-desc");
   const [selectedRepeat, setSelectedRepeat] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -14,9 +18,37 @@ export default function RepeatsPage() {
     setIsModalOpen(true);
   };
 
+  // Filter and sort repeats
+  const filteredRepeats = repeats
+    .filter(repeat => {
+      if (searchTerm && !repeat.number.includes(searchTerm)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "occurrences-desc":
+          return b.occurrences - a.occurrences;
+        case "occurrences-asc":
+          return a.occurrences - b.occurrences;
+        case "number":
+          return a.number.localeCompare(b.number);
+        default:
+          return 0;
+      }
+    });
+
   const weeklyRepeats = repeats.filter(r => r.patternType === 'weekly');
   const consecutiveRepeats = repeats.filter(r => r.patternType === 'consecutive');
   const sameDayRepeats = repeats.filter(r => r.patternType === 'same_day');
+
+  const getPatternTypeColor = (patternType: string) => {
+    switch (patternType) {
+      case 'weekly': return 'bg-blue-600';
+      case 'consecutive': return 'bg-purple-600';
+      case 'same_day': return 'bg-pink-600';
+      default: return 'bg-gray-600';
+    }
+  };
 
   if (isLoading) {
     return (
@@ -73,8 +105,35 @@ export default function RepeatsPage() {
         </CardContent>
       </Card>
 
+      {/* Search and Filter */}
+      <Card className="mb-8">
+        <CardContent className="p-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <Input
+                type="text"
+                placeholder="Search number..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                data-testid="input-search-repeats"
+              />
+            </div>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-full md:w-48" data-testid="select-sort">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="occurrences-desc">Occurrences (High to Low)</SelectItem>
+                <SelectItem value="occurrences-asc">Occurrences (Low to High)</SelectItem>
+                <SelectItem value="number">Number</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Recent Repeat Patterns Table */}
-      <Card>
+      <Card className="mb-8">
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-6 text-primary">
             Recent Repeat Patterns
@@ -92,7 +151,7 @@ export default function RepeatsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {repeats.slice(0, 20).map((repeat, index) => {
+                {filteredRepeats.map((repeat, index) => {
                   const getPatternTypeColor = () => {
                     switch (repeat.patternType) {
                       case 'weekly': return 'bg-blue-600';
@@ -152,6 +211,28 @@ export default function RepeatsPage() {
               </tbody>
             </table>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Repeats Preview */}
+      <Card>
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-6 text-primary">Recent Repeats Preview</h3>
+          <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
+            {filteredRepeats.slice(0, 40).map((repeat) => (
+              <div
+                key={repeat.id}
+                onClick={() => handleNumberClick(repeat)}
+                className={`p-3 rounded-lg text-center cursor-pointer transition-all border-2 ${
+                  getPatternTypeColor(repeat.patternType)
+                } text-white font-bold hover:scale-105`}
+                data-testid={`box-repeat-${repeat.number}`}
+              >
+                {repeat.number}
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-muted-foreground mt-4">Showing {Math.min(filteredRepeats.length, 40)} of {filteredRepeats.length} repeats</p>
         </CardContent>
       </Card>
 

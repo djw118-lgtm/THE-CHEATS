@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingUp } from "lucide-react";
 import NumberDetailModal from "@/components/NumberDetailModal";
 
 export default function StreaksPage() {
   const { gameType, streaks, stats, isLoading } = useLotteryData();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("hits-desc");
   const [selectedStreak, setSelectedStreak] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -13,6 +17,25 @@ export default function StreaksPage() {
     setSelectedStreak(streak);
     setIsModalOpen(true);
   };
+
+  // Filter and sort streaks
+  const filteredStreaks = streaks
+    .filter(streak => {
+      if (searchTerm && !streak.number.includes(searchTerm)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "hits-desc":
+          return b.hitCount - a.hitCount;
+        case "hits-asc":
+          return a.hitCount - b.hitCount;
+        case "number":
+          return a.number.localeCompare(b.number);
+        default:
+          return 0;
+      }
+    });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -85,68 +108,35 @@ export default function StreaksPage() {
         </CardContent>
       </Card>
 
-      {/* Active Streaks */}
+      {/* Search and Filter */}
       <Card className="mb-8">
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 text-primary">
-            Active Hot Streaks
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {streaks.slice(0, 9).map((streak, index) => (
-              <div 
-                key={streak.id}
-                onClick={() => handleNumberClick(streak)}
-                className="bg-muted border border-border rounded-lg p-5 transition-all hover:border-primary cursor-pointer relative"
-                data-testid={`card-streak-${streak.number}`}
-              >
-                <div className="absolute top-3 left-3">
-                  <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
-                    index === 0 ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground'
-                  }`}>
-                    {index + 1}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between mb-4 pl-10">
-                  <span className="text-4xl font-bold stat-number" data-testid={`text-streak-number-${streak.number}`}>
-                    {streak.number}
-                  </span>
-                  {streak.status === 'hot' && (
-                    <span className="px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 text-white bg-green-600">
-                      <span className="w-2 h-2 bg-white rounded-full"></span>
-                      HOT
-                    </span>
-                  )}
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Hits:</span>
-                    <span className="font-bold" data-testid={`text-hits-${streak.number}`}>{streak.hitCount} times</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Period:</span>
-                    <span className="font-bold" data-testid={`text-period-${streak.number}`}>{streak.periodDays} days</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Frequency:</span>
-                    <span className="font-bold text-green-600" data-testid={`text-frequency-${streak.number}`}>
-                      {streak.frequency}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Last Hit:</span>
-                    <span className="font-bold" data-testid={`text-last-hit-${streak.number}`}>
-                      {streak.lastHit ? new Date(streak.lastHit).toLocaleDateString() : 'Invalid Date'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <Input
+                type="text"
+                placeholder="Search number..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                data-testid="input-search-streaks"
+              />
+            </div>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-full md:w-48" data-testid="select-sort">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hits-desc">Hits (High to Low)</SelectItem>
+                <SelectItem value="hits-asc">Hits (Low to High)</SelectItem>
+                <SelectItem value="number">Number</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
 
       {/* Historical Analysis */}
-      <Card>
+      <Card className="mb-8">
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-6 text-primary">
             All Streaks Overview
@@ -165,7 +155,7 @@ export default function StreaksPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {streaks.map((streak, index) => (
+                {filteredStreaks.map((streak, index) => (
                   <tr 
                     key={streak.id} 
                     onClick={() => handleNumberClick(streak)}
@@ -212,6 +202,28 @@ export default function StreaksPage() {
               </tbody>
             </table>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Streaks Preview */}
+      <Card>
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-6 text-primary">Recent Streaks Preview</h3>
+          <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
+            {filteredStreaks.slice(0, 40).map((streak) => (
+              <div
+                key={streak.id}
+                onClick={() => handleNumberClick(streak)}
+                className={`p-3 rounded-lg text-center cursor-pointer transition-all border-2 ${
+                  getStatusColor(streak.status)
+                } text-white font-bold hover:scale-105`}
+                data-testid={`box-streak-${streak.number}`}
+              >
+                {streak.number}
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-muted-foreground mt-4">Showing {Math.min(filteredStreaks.length, 40)} of {filteredStreaks.length} hot streaks</p>
         </CardContent>
       </Card>
 
