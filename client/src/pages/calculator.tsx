@@ -60,9 +60,8 @@ export default function CalculatorPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <Card className="shadow-lg">
-        <CardContent className="p-8">
-          <h2 className="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3">
-            <i className="fas fa-calculator text-primary"></i>
+        <CardContent className="p-6">
+          <h2 className="text-3xl font-bold mb-8 text-center text-primary">
             ROI Calculator
           </h2>
           
@@ -221,19 +220,14 @@ export default function CalculatorPage() {
 
           {/* Info Box */}
           <div className="bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg p-6 border border-primary/30">
-            <div className="flex items-start gap-3">
-              <i className="fas fa-info-circle text-primary text-xl mt-1"></i>
-              <div>
-                <h4 className="font-bold mb-2">Understanding Your Odds</h4>
-                <ul className="space-y-1 text-sm text-muted-foreground">
-                  <li>• Pick 3 Straight: 1 in 1,000 chance per play</li>
-                  <li>• Pick 4 Straight: 1 in 10,000 chance per play</li>
-                  <li>• Fireball increases your winning combinations but costs extra</li>
-                  <li>• Playing more frequently doesn't increase odds per play</li>
-                  <li>• Set a budget and play responsibly</li>
-                </ul>
-              </div>
-            </div>
+            <h4 className="font-bold mb-2">Understanding Your Odds</h4>
+            <ul className="space-y-1 text-sm text-muted-foreground">
+              <li>• Pick 3 Straight: 1 in 1,000 chance per play</li>
+              <li>• Pick 4 Straight: 1 in 10,000 chance per play</li>
+              <li>• Fireball increases your winning combinations but costs extra</li>
+              <li>• Playing more frequently doesn't increase odds per play</li>
+              <li>• Set a budget and play responsibly</li>
+            </ul>
           </div>
         </CardContent>
       </Card>

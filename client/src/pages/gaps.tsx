@@ -75,17 +75,17 @@ export default function GapsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero Stats */}
-      <div className="bg-gradient-to-br from-red-600 to-red-800 rounded-xl p-8 mb-8 shadow-2xl">
-        <div className="text-center text-white">
+      <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-8 mb-8 shadow-2xl">
+        <div className="text-center text-primary-foreground">
           <div className="flex items-center justify-center mb-4">
             <TrendingDown className="w-16 h-16 md:w-20 md:h-20" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2" data-testid="text-gaps-title">GAPS</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3" data-testid="text-gaps-title">GAPS</h2>
           <p className="text-lg md:text-xl mb-6 opacity-90" data-testid="text-gaps-subtitle">Numbers that haven't hit</p>
-          <div className="text-6xl md:text-8xl font-bold stat-number mb-2" data-testid="text-total-gaps">
+          <div className="text-5xl md:text-6xl font-bold stat-number mb-2" data-testid="text-total-gaps">
             {stats?.totalGaps || 0}
           </div>
-          <p className="text-xl opacity-90">Total numbers in drought</p>
+          <p className="text-lg opacity-90">Total numbers in drought</p>
         </div>
       </div>
 
@@ -126,14 +126,12 @@ export default function GapsPage() {
       <Card className="mb-8">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 relative">
-              <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+            <div className="flex-1">
               <Input
                 type="text"
                 placeholder="Search number..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
                 data-testid="input-search-gaps"
               />
             </div>
@@ -177,8 +175,7 @@ export default function GapsPage() {
       {/* Top Droughts */}
       <Card className="mb-8">
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <i className="fas fa-trophy text-primary"></i>
+          <h3 className="text-xl font-bold mb-6 text-primary">
             Top 10 Longest Droughts
           </h3>
           <div className="overflow-x-auto">
@@ -236,8 +233,7 @@ export default function GapsPage() {
       {/* Number Grid Preview */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <i className="fas fa-th text-primary"></i>
+          <h3 className="text-xl font-bold mb-6 text-primary">
             Recent Gaps Preview
           </h3>
           <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 gap-2 mb-6">

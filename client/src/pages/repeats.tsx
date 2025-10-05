@@ -32,112 +32,51 @@ export default function RepeatsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero Stats */}
-      <div className="bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl p-8 mb-8 shadow-2xl">
-        <div className="text-center text-white">
+      <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-8 mb-8 shadow-2xl">
+        <div className="text-center text-primary-foreground">
           <div className="flex items-center justify-center mb-4">
             <Repeat className="w-16 h-16 md:w-20 md:h-20" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2" data-testid="text-repeats-title">REPEATS</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3" data-testid="text-repeats-title">REPEATS</h2>
           <p className="text-lg md:text-xl mb-6 opacity-90" data-testid="text-repeats-subtitle">Numbers hitting multiple times</p>
-          <div className="text-6xl md:text-8xl font-bold stat-number mb-2" data-testid="text-recent-repeats">
+          <div className="text-5xl md:text-6xl font-bold stat-number mb-2" data-testid="text-recent-repeats">
             {stats?.recentRepeats || 0}
           </div>
-          <p className="text-xl opacity-90">Recent repeat patterns</p>
+          <p className="text-lg opacity-90">Recent repeat patterns</p>
         </div>
       </div>
 
-      {/* Categorized Repeats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {/* Within 7 Days */}
-        <Card className="border-blue-600">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-blue-600 flex items-center gap-2">
-                <i className="fas fa-calendar-week"></i>
-                Within 7 Days
-              </h3>
-              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-                {weeklyRepeats.length}
-              </span>
+      {/* Quick Stats */}
+      <Card className="mb-8">
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-6 text-primary">Quick Stats</h3>
+          <div className="space-y-4">
+            <div className="border-l-4 border-blue-600 pl-4">
+              <p className="text-sm text-muted-foreground mb-1">Within 7 Days</p>
+              <p className="text-2xl font-bold stat-number" data-testid="text-weekly">
+                {weeklyRepeats.length} patterns
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">Numbers that repeated within a week</p>
-            <div className="space-y-2">
-              {weeklyRepeats.slice(0, 3).map(repeat => (
-                <div 
-                  key={repeat.id} 
-                  onClick={() => handleNumberClick(repeat)}
-                  className="flex justify-between items-center py-2 border-b border-border last:border-0 cursor-pointer hover:bg-muted transition-colors rounded px-2"
-                >
-                  <span className="text-lg font-bold stat-number" data-testid={`text-weekly-${repeat.number}`}>{repeat.number}</span>
-                  <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
-                </div>
-              ))}
+            <div className="border-l-4 border-purple-600 pl-4">
+              <p className="text-sm text-muted-foreground mb-1">Back-to-Back</p>
+              <p className="text-2xl font-bold stat-number" data-testid="text-consecutive">
+                {consecutiveRepeats.length} patterns
+              </p>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Back-to-Back */}
-        <Card className="border-purple-600">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-purple-600 flex items-center gap-2">
-                <i className="fas fa-link"></i>
-                Back-to-Back
-              </h3>
-              <span className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-                {consecutiveRepeats.length}
-              </span>
+            <div className="border-l-4 border-pink-600 pl-4">
+              <p className="text-sm text-muted-foreground mb-1">Same Day</p>
+              <p className="text-2xl font-bold stat-number" data-testid="text-sameday">
+                {sameDayRepeats.length} patterns
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">Consecutive draw repeats</p>
-            <div className="space-y-2">
-              {consecutiveRepeats.slice(0, 3).map(repeat => (
-                <div 
-                  key={repeat.id} 
-                  onClick={() => handleNumberClick(repeat)}
-                  className="flex justify-between items-center py-2 border-b border-border last:border-0 cursor-pointer hover:bg-muted transition-colors rounded px-2"
-                >
-                  <span className="text-lg font-bold stat-number" data-testid={`text-consecutive-${repeat.number}`}>{repeat.number}</span>
-                  <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Same Day */}
-        <Card className="border-pink-600">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-pink-600 flex items-center gap-2">
-                <i className="fas fa-calendar-day"></i>
-                Same Day
-              </h3>
-              <span className="bg-pink-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-                {sameDayRepeats.length}
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-4">Repeated on same day (Midday & Evening)</p>
-            <div className="space-y-2">
-              {sameDayRepeats.slice(0, 3).map(repeat => (
-                <div 
-                  key={repeat.id} 
-                  onClick={() => handleNumberClick(repeat)}
-                  className="flex justify-between items-center py-2 border-b border-border last:border-0 cursor-pointer hover:bg-muted transition-colors rounded px-2"
-                >
-                  <span className="text-lg font-bold stat-number" data-testid={`text-sameday-${repeat.number}`}>{repeat.number}</span>
-                  <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Recent Repeat Patterns Table */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <Repeat className="w-6 h-6 text-primary" />
+          <h3 className="text-xl font-bold mb-6 text-primary">
             Recent Repeat Patterns
           </h3>
           <div className="overflow-x-auto">

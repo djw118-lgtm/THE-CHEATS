@@ -112,14 +112,13 @@ export default function LandingPage() {
         </div>
 
         <div className="text-center">
-          <div className="relative max-w-2xl mx-auto">
-            <i className="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground text-xl"></i>
+          <div className="max-w-2xl mx-auto">
             <input
               type="text"
               placeholder="SEARCH NUMBERS"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-6 py-4 bg-card border-2 border-border rounded-xl text-foreground text-lg placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+              className="w-full px-6 py-4 bg-card border-2 border-border rounded-xl text-foreground text-lg placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
               data-testid="input-search"
             />
           </div>

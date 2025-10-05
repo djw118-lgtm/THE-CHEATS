@@ -23,14 +23,6 @@ export default function StreaksPage() {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'hot': return 'fas fa-fire';
-      case 'warm': return 'fas fa-temperature-high';
-      case 'cooling': return 'fas fa-snowflake';
-      default: return 'fas fa-thermometer-half';
-    }
-  };
 
   if (isLoading) {
     return (
@@ -46,17 +38,17 @@ export default function StreaksPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero Stats */}
-      <div className="bg-gradient-to-br from-green-600 to-green-800 rounded-xl p-8 mb-8 shadow-2xl">
-        <div className="text-center text-white">
+      <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-8 mb-8 shadow-2xl">
+        <div className="text-center text-primary-foreground">
           <div className="flex items-center justify-center mb-4">
             <TrendingUp className="w-16 h-16 md:w-20 md:h-20" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2" data-testid="text-streaks-title">STREAKS</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3" data-testid="text-streaks-title">STREAKS</h2>
           <p className="text-lg md:text-xl mb-6 opacity-90" data-testid="text-streaks-subtitle">Hot numbers on fire</p>
-          <div className="text-6xl md:text-8xl font-bold stat-number mb-2" data-testid="text-active-streaks">
+          <div className="text-5xl md:text-6xl font-bold stat-number mb-2" data-testid="text-active-streaks">
             {stats?.activeStreaks || 0}
           </div>
-          <p className="text-xl opacity-90">Active hot streaks</p>
+          <p className="text-lg opacity-90">Active hot streaks</p>
         </div>
       </div>
 
@@ -94,69 +86,69 @@ export default function StreaksPage() {
       </Card>
 
       {/* Active Streaks */}
-      <div className="mb-8">
-        <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-green-600">
-          <TrendingUp className="w-6 h-6" />
-          Active Hot Streaks
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {streaks.slice(0, 9).map((streak, index) => (
-            <div 
-              key={streak.id}
-              onClick={() => handleNumberClick(streak)}
-              className="bg-card border border-border rounded-lg p-5 transition-all hover:border-green-600 cursor-pointer relative"
-              data-testid={`card-streak-${streak.number}`}
-            >
-              <div className="absolute top-3 left-3">
-                <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
-                  index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
-                }`}>
-                  {index + 1}
-                </span>
-              </div>
-              <div className="flex items-center justify-between mb-4 pl-10">
-                <span className="text-4xl font-bold stat-number" data-testid={`text-streak-number-${streak.number}`}>
-                  {streak.number}
-                </span>
-                {streak.status === 'hot' && (
-                  <span className="px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 text-white bg-green-600">
-                    <span className="w-2 h-2 bg-white rounded-full"></span>
-                    HOT
-                  </span>
-                )}
-              </div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Hits:</span>
-                  <span className="font-bold" data-testid={`text-hits-${streak.number}`}>{streak.hitCount} times</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Period:</span>
-                  <span className="font-bold" data-testid={`text-period-${streak.number}`}>{streak.periodDays} days</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Frequency:</span>
-                  <span className="font-bold text-green-600" data-testid={`text-frequency-${streak.number}`}>
-                    {streak.frequency}
+      <Card className="mb-8">
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-6 text-primary">
+            Active Hot Streaks
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {streaks.slice(0, 9).map((streak, index) => (
+              <div 
+                key={streak.id}
+                onClick={() => handleNumberClick(streak)}
+                className="bg-muted border border-border rounded-lg p-5 transition-all hover:border-primary cursor-pointer relative"
+                data-testid={`card-streak-${streak.number}`}
+              >
+                <div className="absolute top-3 left-3">
+                  <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
+                    index === 0 ? 'bg-primary text-primary-foreground' : 'bg-card text-foreground'
+                  }`}>
+                    {index + 1}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Last Hit:</span>
-                  <span className="font-bold" data-testid={`text-last-hit-${streak.number}`}>
-                    {streak.lastHit ? new Date(streak.lastHit).toLocaleDateString() : 'Invalid Date'}
+                <div className="flex items-center justify-between mb-4 pl-10">
+                  <span className="text-4xl font-bold stat-number" data-testid={`text-streak-number-${streak.number}`}>
+                    {streak.number}
                   </span>
+                  {streak.status === 'hot' && (
+                    <span className="px-3 py-1 rounded-full text-sm font-semibold flex items-center gap-1 text-white bg-green-600">
+                      <span className="w-2 h-2 bg-white rounded-full"></span>
+                      HOT
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Hits:</span>
+                    <span className="font-bold" data-testid={`text-hits-${streak.number}`}>{streak.hitCount} times</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Period:</span>
+                    <span className="font-bold" data-testid={`text-period-${streak.number}`}>{streak.periodDays} days</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Frequency:</span>
+                    <span className="font-bold text-green-600" data-testid={`text-frequency-${streak.number}`}>
+                      {streak.frequency}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Last Hit:</span>
+                    <span className="font-bold" data-testid={`text-last-hit-${streak.number}`}>
+                      {streak.lastHit ? new Date(streak.lastHit).toLocaleDateString() : 'Invalid Date'}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Historical Analysis */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <i className="fas fa-chart-bar text-primary"></i>
+          <h3 className="text-xl font-bold mb-6 text-primary">
             All Streaks Overview
           </h3>
           <div className="overflow-x-auto">

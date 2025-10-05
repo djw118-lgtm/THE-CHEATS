@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
+import { Eye } from "lucide-react";
 import NumberDetailModal from "@/components/NumberDetailModal";
 
 export default function WatchPage() {
@@ -37,47 +38,51 @@ export default function WatchPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero Stats */}
-      <div className="bg-gradient-to-br from-purple-600 to-indigo-800 rounded-xl p-8 mb-8 shadow-2xl">
-        <div className="text-center text-white">
+      <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-8 mb-8 shadow-2xl">
+        <div className="text-center text-primary-foreground">
           <div className="flex items-center justify-center mb-4">
-            <i className="fas fa-eye text-4xl md:text-5xl"></i>
+            <Eye className="w-16 h-16 md:w-20 md:h-20" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold mb-2" data-testid="text-watch-title">{title}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3" data-testid="text-watch-title">{title}</h2>
           <p className="text-lg md:text-xl mb-6 opacity-90" data-testid="text-watch-subtitle">{subtitle}</p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="text-3xl font-bold stat-number" data-testid="text-total-patterns">
-                {watchNumbers.length}
-              </div>
-              <p className="text-sm opacity-90 mt-1">Total {gameType === 'pick4' ? 'Quads' : 'Triples'}</p>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="text-3xl font-bold stat-number" data-testid="text-pending-patterns">
-                {pendingNumbers.length}
-              </div>
-              <p className="text-sm opacity-90 mt-1">Still Pending</p>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="text-3xl font-bold stat-number" data-testid="text-hit-patterns">
-                {hitNumbers.length}
-              </div>
-              <p className="text-sm opacity-90 mt-1">Already Hit</p>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4">
-              <div className="text-3xl font-bold stat-number" data-testid="text-longest-wait">
-                {longestWait.daysSince || 0}
-              </div>
-              <p className="text-sm opacity-90 mt-1">Longest Wait</p>
-            </div>
+          <div className="text-5xl md:text-6xl font-bold stat-number mb-2" data-testid="text-total-patterns">
+            {watchNumbers.length}
           </div>
+          <p className="text-lg opacity-90">Total {gameType === 'pick4' ? 'quads' : 'triples'} tracked</p>
         </div>
       </div>
+
+      {/* Quick Stats */}
+      <Card className="mb-8">
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-6 text-primary">Quick Stats</h3>
+          <div className="space-y-4">
+            <div className="border-l-4 border-primary pl-4">
+              <p className="text-sm text-muted-foreground mb-1">Still Pending</p>
+              <p className="text-2xl font-bold stat-number" data-testid="text-pending-patterns">
+                {pendingNumbers.length} patterns
+              </p>
+            </div>
+            <div className="border-l-4 border-green-600 pl-4">
+              <p className="text-sm text-muted-foreground mb-1">Already Hit</p>
+              <p className="text-2xl font-bold stat-number" data-testid="text-hit-patterns">
+                {hitNumbers.length} patterns
+              </p>
+            </div>
+            <div className="border-l-4 border-red-600 pl-4">
+              <p className="text-sm text-muted-foreground mb-1">Longest Wait</p>
+              <p className="text-2xl font-bold stat-number" data-testid="text-longest-wait">
+                {longestWait.daysSince || 0} days
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* All Patterns Grid */}
       <Card className="mb-8">
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <i className="fas fa-th-large text-primary"></i>
+          <h3 className="text-xl font-bold mb-6 text-primary">
             All {gameType === 'pick4' ? 'Quadruple' : 'Triple'} Patterns
           </h3>
           <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
@@ -112,8 +117,7 @@ export default function WatchPage() {
       {/* Detailed Analysis */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <i className="fas fa-chart-line text-primary"></i>
+          <h3 className="text-xl font-bold mb-6 text-primary">
             Detailed History
           </h3>
           <div className="overflow-x-auto">
