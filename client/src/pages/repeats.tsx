@@ -32,8 +32,8 @@ export default function RepeatsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero Stats */}
-      <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-8 mb-8 shadow-2xl">
-        <div className="text-center text-primary-foreground">
+      <div className="bg-purple-600 rounded-xl p-8 mb-8 shadow-2xl">
+        <div className="text-center text-white">
           <div className="flex items-center justify-center mb-4">
             <Repeat className="w-16 h-16 md:w-20 md:h-20" />
           </div>
