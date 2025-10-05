@@ -100,14 +100,21 @@ export default function StreaksPage() {
           Active Hot Streaks
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {streaks.slice(0, 9).map(streak => (
+          {streaks.slice(0, 9).map((streak, index) => (
             <div 
               key={streak.id}
               onClick={() => handleNumberClick(streak)}
-              className="bg-card border border-border rounded-lg p-5 transition-all hover:border-green-600 cursor-pointer"
+              className="bg-card border border-border rounded-lg p-5 transition-all hover:border-green-600 cursor-pointer relative"
               data-testid={`card-streak-${streak.number}`}
             >
-              <div className="flex items-center justify-between mb-4">
+              <div className="absolute top-3 left-3">
+                <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
+                  index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
+                }`}>
+                  {index + 1}
+                </span>
+              </div>
+              <div className="flex items-center justify-between mb-4 pl-10">
                 <span className="text-4xl font-bold stat-number" data-testid={`text-streak-number-${streak.number}`}>
                   {streak.number}
                 </span>
@@ -156,6 +163,7 @@ export default function StreaksPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Rank</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Number</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Hits</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Period</th>
@@ -165,13 +173,20 @@ export default function StreaksPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {streaks.map(streak => (
+                {streaks.map((streak, index) => (
                   <tr 
                     key={streak.id} 
                     onClick={() => handleNumberClick(streak)}
                     className="hover:bg-muted transition-colors cursor-pointer" 
                     data-testid={`row-streak-${streak.number}`}
                   >
+                    <td className="py-4 px-4">
+                      <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
+                        index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
+                      }`}>
+                        {index + 1}
+                      </span>
+                    </td>
                     <td className="py-4 px-4">
                       <span className="text-xl font-bold stat-number" data-testid={`text-table-number-${streak.number}`}>
                         {streak.number}

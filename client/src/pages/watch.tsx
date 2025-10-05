@@ -120,6 +120,7 @@ export default function WatchPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
+                  <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Rank</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Number</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Status</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Last Hit Date</th>
@@ -128,13 +129,20 @@ export default function WatchPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {watchNumbers.map(pattern => (
+                {watchNumbers.map((pattern, index) => (
                   <tr 
                     key={pattern.id} 
                     onClick={() => handleNumberClick(pattern)}
                     className="hover:bg-muted transition-colors cursor-pointer" 
                     data-testid={`row-pattern-${pattern.pattern}`}
                   >
+                    <td className="py-4 px-4">
+                      <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
+                        index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
+                      }`}>
+                        {index + 1}
+                      </span>
+                    </td>
                     <td className="py-4 px-4">
                       <span className="text-xl font-bold stat-number" data-testid={`text-table-pattern-${pattern.pattern}`}>
                         {pattern.pattern}
