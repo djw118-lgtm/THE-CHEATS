@@ -1,9 +1,18 @@
+import { useState } from "react";
 import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Repeat } from "lucide-react";
+import NumberDetailModal from "@/components/NumberDetailModal";
 
 export default function RepeatsPage() {
   const { gameType, repeats, stats, isLoading } = useLotteryData();
+  const [selectedRepeat, setSelectedRepeat] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleNumberClick = (repeat: any) => {
+    setSelectedRepeat(repeat);
+    setIsModalOpen(true);
+  };
 
   const weeklyRepeats = repeats.filter(r => r.patternType === 'weekly');
   const consecutiveRepeats = repeats.filter(r => r.patternType === 'consecutive');
@@ -54,7 +63,11 @@ export default function RepeatsPage() {
             <p className="text-sm text-muted-foreground mb-4">Numbers that repeated within a week</p>
             <div className="space-y-2">
               {weeklyRepeats.slice(0, 3).map(repeat => (
-                <div key={repeat.id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                <div 
+                  key={repeat.id} 
+                  onClick={() => handleNumberClick(repeat)}
+                  className="flex justify-between items-center py-2 border-b border-border last:border-0 cursor-pointer hover:bg-muted transition-colors rounded px-2"
+                >
                   <span className="text-lg font-bold stat-number" data-testid={`text-weekly-${repeat.number}`}>{repeat.number}</span>
                   <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
                 </div>
@@ -78,7 +91,11 @@ export default function RepeatsPage() {
             <p className="text-sm text-muted-foreground mb-4">Consecutive draw repeats</p>
             <div className="space-y-2">
               {consecutiveRepeats.slice(0, 3).map(repeat => (
-                <div key={repeat.id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                <div 
+                  key={repeat.id} 
+                  onClick={() => handleNumberClick(repeat)}
+                  className="flex justify-between items-center py-2 border-b border-border last:border-0 cursor-pointer hover:bg-muted transition-colors rounded px-2"
+                >
                   <span className="text-lg font-bold stat-number" data-testid={`text-consecutive-${repeat.number}`}>{repeat.number}</span>
                   <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
                 </div>
@@ -102,7 +119,11 @@ export default function RepeatsPage() {
             <p className="text-sm text-muted-foreground mb-4">Repeated on same day (Midday & Evening)</p>
             <div className="space-y-2">
               {sameDayRepeats.slice(0, 3).map(repeat => (
-                <div key={repeat.id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                <div 
+                  key={repeat.id} 
+                  onClick={() => handleNumberClick(repeat)}
+                  className="flex justify-between items-center py-2 border-b border-border last:border-0 cursor-pointer hover:bg-muted transition-colors rounded px-2"
+                >
                   <span className="text-lg font-bold stat-number" data-testid={`text-sameday-${repeat.number}`}>{repeat.number}</span>
                   <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
                 </div>
@@ -151,7 +172,12 @@ export default function RepeatsPage() {
                   };
 
                   return (
-                    <tr key={repeat.id} className="hover:bg-muted transition-colors" data-testid={`row-repeat-${repeat.number}`}>
+                    <tr 
+                      key={repeat.id} 
+                      onClick={() => handleNumberClick(repeat)}
+                      className="hover:bg-muted transition-colors cursor-pointer" 
+                      data-testid={`row-repeat-${repeat.number}`}
+                    >
                       <td className="py-4 px-4">
                         <span className="text-xl font-bold stat-number" data-testid={`text-number-${repeat.number}`}>
                           {repeat.number}
@@ -181,6 +207,17 @@ export default function RepeatsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Number Detail Modal */}
+      {selectedRepeat && (
+        <NumberDetailModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          number={selectedRepeat.number}
+          type="repeat"
+          data={selectedRepeat}
+        />
+      )}
     </div>
   );
 }

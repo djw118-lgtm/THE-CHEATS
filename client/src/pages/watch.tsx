@@ -1,8 +1,17 @@
+import { useState } from "react";
 import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
+import NumberDetailModal from "@/components/NumberDetailModal";
 
 export default function WatchPage() {
   const { gameType, watchNumbers, isLoading } = useLotteryData();
+  const [selectedWatch, setSelectedWatch] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleNumberClick = (watch: any) => {
+    setSelectedWatch(watch);
+    setIsModalOpen(true);
+  };
 
   const pendingNumbers = watchNumbers.filter(n => !n.hasHit);
   const hitNumbers = watchNumbers.filter(n => n.hasHit);
@@ -75,7 +84,8 @@ export default function WatchPage() {
             {watchNumbers.map(pattern => (
               <div 
                 key={pattern.id}
-                className={`bg-muted rounded-lg p-4 border-2 transition-all number-card text-center ${
+                onClick={() => handleNumberClick(pattern)}
+                className={`bg-muted rounded-lg p-4 border-2 transition-all number-card text-center cursor-pointer ${
                   pattern.hasHit 
                     ? 'border-green-600 hover:border-green-600' 
                     : 'border-border hover:border-red-600'
@@ -119,7 +129,12 @@ export default function WatchPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {watchNumbers.map(pattern => (
-                  <tr key={pattern.id} className="hover:bg-muted transition-colors" data-testid={`row-pattern-${pattern.pattern}`}>
+                  <tr 
+                    key={pattern.id} 
+                    onClick={() => handleNumberClick(pattern)}
+                    className="hover:bg-muted transition-colors cursor-pointer" 
+                    data-testid={`row-pattern-${pattern.pattern}`}
+                  >
                     <td className="py-4 px-4">
                       <span className="text-xl font-bold stat-number" data-testid={`text-table-pattern-${pattern.pattern}`}>
                         {pattern.pattern}
@@ -154,6 +169,17 @@ export default function WatchPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Number Detail Modal */}
+      {selectedWatch && (
+        <NumberDetailModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          number={selectedWatch.pattern}
+          type="watch"
+          data={selectedWatch}
+        />
+      )}
     </div>
   );
 }

@@ -1,9 +1,18 @@
+import { useState } from "react";
 import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import NumberDetailModal from "@/components/NumberDetailModal";
 
 export default function StreaksPage() {
   const { gameType, streaks, stats, isLoading } = useLotteryData();
+  const [selectedStreak, setSelectedStreak] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleNumberClick = (streak: any) => {
+    setSelectedStreak(streak);
+    setIsModalOpen(true);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -93,8 +102,9 @@ export default function StreaksPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {streaks.slice(0, 9).map(streak => (
             <div 
-              key={streak.id} 
-              className="bg-card border border-border rounded-lg p-5 transition-all hover:border-green-600"
+              key={streak.id}
+              onClick={() => handleNumberClick(streak)}
+              className="bg-card border border-border rounded-lg p-5 transition-all hover:border-green-600 cursor-pointer"
               data-testid={`card-streak-${streak.number}`}
             >
               <div className="flex items-center justify-between mb-4">
@@ -156,7 +166,12 @@ export default function StreaksPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {streaks.map(streak => (
-                  <tr key={streak.id} className="hover:bg-muted transition-colors" data-testid={`row-streak-${streak.number}`}>
+                  <tr 
+                    key={streak.id} 
+                    onClick={() => handleNumberClick(streak)}
+                    className="hover:bg-muted transition-colors cursor-pointer" 
+                    data-testid={`row-streak-${streak.number}`}
+                  >
                     <td className="py-4 px-4">
                       <span className="text-xl font-bold stat-number" data-testid={`text-table-number-${streak.number}`}>
                         {streak.number}
@@ -192,6 +207,17 @@ export default function StreaksPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Number Detail Modal */}
+      {selectedStreak && (
+        <NumberDetailModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          number={selectedStreak.number}
+          type="streak"
+          data={selectedStreak}
+        />
+      )}
     </div>
   );
 }
