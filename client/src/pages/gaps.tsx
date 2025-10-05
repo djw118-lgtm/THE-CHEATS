@@ -3,6 +3,7 @@ import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TrendingDown } from "lucide-react";
 
 export default function GapsPage() {
   const { gameType, gaps, stats, isLoading } = useLotteryData();
@@ -69,7 +70,7 @@ export default function GapsPage() {
       <div className="bg-gradient-to-br from-red-600 to-red-800 rounded-xl p-8 mb-8 shadow-2xl">
         <div className="text-center text-white">
           <div className="flex items-center justify-center mb-4">
-            <i className="fas fa-chart-line text-4xl md:text-5xl"></i>
+            <TrendingDown className="w-16 h-16 md:w-20 md:h-20" />
           </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-2" data-testid="text-gaps-title">GAPS</h2>
           <p className="text-lg md:text-xl mb-6 opacity-90" data-testid="text-gaps-subtitle">Numbers that haven't hit</p>

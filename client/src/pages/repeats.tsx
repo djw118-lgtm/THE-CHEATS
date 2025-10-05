@@ -1,5 +1,6 @@
 import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
+import { Repeat } from "lucide-react";
 
 export default function RepeatsPage() {
   const { gameType, repeats, stats, isLoading } = useLotteryData();
@@ -49,10 +50,10 @@ export default function RepeatsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero Stats */}
-      <div className="bg-gradient-to-br from-blue-600 to-purple-800 rounded-xl p-8 mb-8 shadow-2xl">
+      <div className="bg-gradient-to-br from-purple-600 to-purple-800 rounded-xl p-8 mb-8 shadow-2xl">
         <div className="text-center text-white">
           <div className="flex items-center justify-center mb-4">
-            <i className="fas fa-redo text-4xl md:text-5xl"></i>
+            <Repeat className="w-16 h-16 md:w-20 md:h-20" />
           </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-2" data-testid="text-repeats-title">REPEATS</h2>
           <p className="text-lg md:text-xl mb-6 opacity-90" data-testid="text-repeats-subtitle">Numbers hitting multiple times</p>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useLotteryData } from "@/hooks/use-lottery-data";
+import { TrendingDown, TrendingUp, Repeat } from "lucide-react";
 
 export default function LandingPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,7 +43,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="bg-red-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <i className="fas fa-chart-line text-3xl text-white"></i>
+                <TrendingDown className="w-10 h-10 text-white" />
               </div>
               <h4 className="text-xl font-bold text-primary mb-2" data-testid="text-feature-gaps-title">GAPS</h4>
               <p className="text-foreground" data-testid="text-feature-gaps-description">Numbers that haven't hit</p>
@@ -51,7 +52,7 @@ export default function LandingPage() {
 
             <div className="text-center">
               <div className="bg-green-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <i className="fas fa-fire text-3xl text-white"></i>
+                <TrendingUp className="w-10 h-10 text-white" />
               </div>
               <h4 className="text-xl font-bold text-primary mb-2" data-testid="text-feature-streaks-title">STREAKS</h4>
               <p className="text-foreground" data-testid="text-feature-streaks-description">Numbers hitting frequently</p>
@@ -59,8 +60,8 @@ export default function LandingPage() {
             </div>
 
             <div className="text-center">
-              <div className="bg-blue-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <i className="fas fa-redo text-3xl text-white"></i>
+              <div className="bg-purple-600 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <Repeat className="w-10 h-10 text-white" />
               </div>
               <h4 className="text-xl font-bold text-primary mb-2" data-testid="text-feature-repeats-title">REPEATS</h4>
               <p className="text-foreground" data-testid="text-feature-repeats-description">Numbers hitting multiple times</p>

@@ -1,5 +1,6 @@
 import { useLotteryData } from "@/hooks/use-lottery-data";
 import { Card, CardContent } from "@/components/ui/card";
+import { TrendingUp } from "lucide-react";
 
 export default function StreaksPage() {
   const { gameType, streaks, stats, isLoading } = useLotteryData();
@@ -39,7 +40,7 @@ export default function StreaksPage() {
       <div className="bg-gradient-to-br from-green-600 to-green-800 rounded-xl p-8 mb-8 shadow-2xl">
         <div className="text-center text-white">
           <div className="flex items-center justify-center mb-4">
-            <i className="fas fa-fire text-4xl md:text-5xl"></i>
+            <TrendingUp className="w-16 h-16 md:w-20 md:h-20" />
           </div>
           <h2 className="text-2xl md:text-3xl font-bold mb-2" data-testid="text-streaks-title">STREAKS</h2>
           <p className="text-lg md:text-xl mb-6 opacity-90" data-testid="text-streaks-subtitle">Hot numbers on fire</p>
