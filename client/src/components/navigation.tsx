@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useLotteryData } from "@/hooks/use-lottery-data";
+import { ArrowLeft, Home } from "lucide-react";
 
 export default function Navigation() {
   const [location] = useLocation();
@@ -75,7 +76,7 @@ export default function Navigation() {
                 className="nav-link px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
                 data-testid="button-back"
               >
-                <i className="fas fa-arrow-left"></i>
+                <ArrowLeft className="w-4 h-4" />
                 BACK
               </button>
               <Link 
@@ -85,7 +86,7 @@ export default function Navigation() {
                 }`}
                 data-testid="link-home"
               >
-                <i className="fas fa-home"></i>
+                <Home className="w-4 h-4" />
                 HOME
               </Link>
             </div>
@@ -162,19 +163,19 @@ export default function Navigation() {
               goBack();
               setIsMobileMenuOpen(false);
             }}
-            className="block w-full text-left py-2 px-3 rounded text-muted-foreground hover:text-primary transition-colors"
+            className="block w-full text-left py-2 px-3 rounded text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
             data-testid="button-mobile-back"
           >
-            <i className="fas fa-arrow-left mr-2"></i>
+            <ArrowLeft className="w-4 h-4" />
             BACK
           </button>
           <Link
             href="/"
             onClick={() => setIsMobileMenuOpen(false)}
-            className="block w-full text-left py-2 px-3 rounded text-muted-foreground hover:text-primary transition-colors"
+            className="block w-full text-left py-2 px-3 rounded text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
             data-testid="link-mobile-home"
           >
-            <i className="fas fa-home mr-2"></i>
+            <Home className="w-4 h-4" />
             HOME
           </Link>
           <button 

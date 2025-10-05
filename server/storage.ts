@@ -70,6 +70,14 @@ export class MemStorage implements IStorage {
     // Initialize gap analysis for both games
     this.initializeGaps('pick3');
     this.initializeGaps('pick4');
+    
+    // Initialize streaks for both games
+    this.initializeStreaks('pick3');
+    this.initializeStreaks('pick4');
+    
+    // Initialize repeats for both games
+    this.initializeRepeats('pick3');
+    this.initializeRepeats('pick4');
   }
 
   private initializeWatchPatterns(gameType: 'pick3' | 'pick4') {
@@ -115,6 +123,70 @@ export class MemStorage implements IStorage {
         updatedAt: new Date(),
       };
       this.gaps.set(id, gap);
+    }
+  }
+
+  private initializeStreaks(gameType: 'pick3' | 'pick4') {
+    // Create sample streaks for demonstration
+    const streakCount = Math.floor(Math.random() * 15) + 10; // 10-25 streaks
+    
+    for (let i = 0; i < streakCount; i++) {
+      const number = gameType === 'pick4' 
+        ? Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+        : Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      
+      const hitCount = Math.floor(Math.random() * 10) + 3; // 3-12 hits
+      const daysActive = Math.floor(Math.random() * 30) + 1; // 1-30 days
+      const frequency = `${hitCount} hits in ${daysActive} days`;
+      const status = hitCount >= 8 ? 'hot' : hitCount >= 5 ? 'warm' : 'cooling';
+      
+      const id = randomUUID();
+      const streak: StreakAnalysis = {
+        id,
+        gameType,
+        number,
+        hitCount,
+        frequency,
+        isActive: true,
+        status,
+        lastHitDate: new Date(Date.now() - Math.floor(Math.random() * 3 * 24 * 60 * 60 * 1000)), // within last 3 days
+        drawType: Math.random() > 0.5 ? 'midday' : 'evening',
+      };
+      this.streaks.set(id, streak);
+    }
+  }
+
+  private initializeRepeats(gameType: 'pick3' | 'pick4') {
+    // Create sample repeats for demonstration
+    const repeatCount = Math.floor(Math.random() * 20) + 15; // 15-35 repeats
+    const patternTypes = ['consecutive', 'same_day', 'weekly'] as const;
+    
+    for (let i = 0; i < repeatCount; i++) {
+      const number = gameType === 'pick4' 
+        ? Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+        : Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      
+      const patternType = patternTypes[Math.floor(Math.random() * patternTypes.length)];
+      const daysBetween = patternType === 'consecutive' ? 1 : 
+                          patternType === 'same_day' ? 0 : 
+                          Math.floor(Math.random() * 7) + 1; // 1-7 days for weekly
+      
+      const occurrences = Math.floor(Math.random() * 5) + 2; // 2-6 occurrences
+      const daysAgo = Math.floor(Math.random() * 30) + 1; // within last 30 days
+      
+      const id = randomUUID();
+      const repeat: RepeatAnalysis = {
+        id,
+        gameType,
+        number,
+        patternType,
+        occurrences,
+        lastOccurrence: new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000),
+        daysBetween,
+        drawType: Math.random() > 0.5 ? 'midday' : 'evening',
+        createdAt: new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000),
+      };
+      this.repeats.set(id, repeat);
     }
   }
 
