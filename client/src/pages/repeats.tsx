@@ -9,33 +9,6 @@ export default function RepeatsPage() {
   const consecutiveRepeats = repeats.filter(r => r.patternType === 'consecutive');
   const sameDayRepeats = repeats.filter(r => r.patternType === 'same_day');
 
-  const getPatternColor = (patternType: string) => {
-    switch (patternType) {
-      case 'weekly': return 'bg-blue-600';
-      case 'consecutive': return 'bg-purple-600';
-      case 'same_day': return 'bg-pink-600';
-      default: return 'bg-gray-600';
-    }
-  };
-
-  const getPatternIcon = (patternType: string) => {
-    switch (patternType) {
-      case 'weekly': return 'fas fa-calendar-week';
-      case 'consecutive': return 'fas fa-link';
-      case 'same_day': return 'fas fa-calendar-day';
-      default: return 'fas fa-redo';
-    }
-  };
-
-  const getPatternTitle = (patternType: string) => {
-    switch (patternType) {
-      case 'weekly': return 'Within 7 Days';
-      case 'consecutive': return 'Back-to-Back';
-      case 'same_day': return 'Same Day';
-      default: return 'Unknown';
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -64,110 +37,74 @@ export default function RepeatsPage() {
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <Card className="mb-8">
-        <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 text-primary">Quick Stats</h3>
-          <div className="space-y-4">
-            <div className="border-l-4 border-blue-600 pl-4">
-              <p className="text-sm text-muted-foreground mb-1">Latest Repeat</p>
-              <p className="text-2xl font-bold stat-number" data-testid="text-latest-repeat">
-                {repeats[0] ? (
-                  <>
-                    {repeats[0].number} - <span className="text-blue-600">{repeats[0].description}</span>
-                  </>
-                ) : (
-                  'No recent repeats'
-                )}
-              </p>
-            </div>
-            <div className="border-l-4 border-purple-600 pl-4">
-              <p className="text-sm text-muted-foreground mb-1">Most Recent Back-to-Back</p>
-              <p className="text-2xl font-bold stat-number" data-testid="text-recent-consecutive">
-                {consecutiveRepeats[0]?.number || 'None'} - {consecutiveRepeats[0]?.description || 'No data'}
-              </p>
-            </div>
-            <div className="border-l-4 border-pink-600 pl-4">
-              <p className="text-sm text-muted-foreground mb-1">Same Day Double</p>
-              <p className="text-2xl font-bold stat-number" data-testid="text-same-day">
-                {sameDayRepeats[0]?.number || 'None'} - {sameDayRepeats[0]?.description || 'No data'}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Repeat Categories */}
+      {/* Categorized Repeats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className={`border transition-all hover:border-blue-600`}>
+        {/* Within 7 Days */}
+        <Card className="border-blue-600">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                <i className="fas fa-calendar-week text-blue-600"></i>
+              <h3 className="text-lg font-bold text-blue-600 flex items-center gap-2">
+                <i className="fas fa-calendar-week"></i>
                 Within 7 Days
               </h3>
-              <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold" data-testid="count-weekly">
+              <span className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
                 {weeklyRepeats.length}
               </span>
             </div>
-            <p className="text-muted-foreground text-sm mb-4">Numbers that repeated within a week</p>
+            <p className="text-sm text-muted-foreground mb-4">Numbers that repeated within a week</p>
             <div className="space-y-2">
               {weeklyRepeats.slice(0, 3).map(repeat => (
-                <div key={repeat.id} className="flex justify-between items-center p-2 bg-muted rounded" data-testid={`card-weekly-${repeat.number}`}>
-                  <span className="font-bold stat-number" data-testid={`text-weekly-number-${repeat.number}`}>{repeat.number}</span>
-                  <span className="text-sm text-muted-foreground" data-testid={`text-weekly-occurrences-${repeat.number}`}>
-                    {repeat.occurrences} times
-                  </span>
+                <div key={repeat.id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                  <span className="text-lg font-bold stat-number" data-testid={`text-weekly-${repeat.number}`}>{repeat.number}</span>
+                  <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        <Card className={`border transition-all hover:border-purple-600`}>
+        {/* Back-to-Back */}
+        <Card className="border-purple-600">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                <i className="fas fa-link text-purple-600"></i>
+              <h3 className="text-lg font-bold text-purple-600 flex items-center gap-2">
+                <i className="fas fa-link"></i>
                 Back-to-Back
               </h3>
-              <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold" data-testid="count-consecutive">
+              <span className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
                 {consecutiveRepeats.length}
               </span>
             </div>
-            <p className="text-muted-foreground text-sm mb-4">Consecutive draw repeats</p>
+            <p className="text-sm text-muted-foreground mb-4">Consecutive draw repeats</p>
             <div className="space-y-2">
               {consecutiveRepeats.slice(0, 3).map(repeat => (
-                <div key={repeat.id} className="flex justify-between items-center p-2 bg-muted rounded" data-testid={`card-consecutive-${repeat.number}`}>
-                  <span className="font-bold stat-number" data-testid={`text-consecutive-number-${repeat.number}`}>{repeat.number}</span>
-                  <span className="text-sm text-muted-foreground" data-testid={`text-consecutive-description-${repeat.number}`}>
-                    {repeat.description}
-                  </span>
+                <div key={repeat.id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                  <span className="text-lg font-bold stat-number" data-testid={`text-consecutive-${repeat.number}`}>{repeat.number}</span>
+                  <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
-        <Card className={`border transition-all hover:border-pink-600`}>
+        {/* Same Day */}
+        <Card className="border-pink-600">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                <i className="fas fa-calendar-day text-pink-600"></i>
+              <h3 className="text-lg font-bold text-pink-600 flex items-center gap-2">
+                <i className="fas fa-calendar-day"></i>
                 Same Day
               </h3>
-              <span className="bg-pink-600 text-white px-3 py-1 rounded-full text-sm font-bold" data-testid="count-same-day">
+              <span className="bg-pink-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
                 {sameDayRepeats.length}
               </span>
             </div>
-            <p className="text-muted-foreground text-sm mb-4">Repeated on same day (Midday & Evening)</p>
+            <p className="text-sm text-muted-foreground mb-4">Repeated on same day (Midday & Evening)</p>
             <div className="space-y-2">
               {sameDayRepeats.slice(0, 3).map(repeat => (
-                <div key={repeat.id} className="flex justify-between items-center p-2 bg-muted rounded" data-testid={`card-same-day-${repeat.number}`}>
-                  <span className="font-bold stat-number" data-testid={`text-same-day-number-${repeat.number}`}>{repeat.number}</span>
-                  <span className="text-sm text-muted-foreground" data-testid={`text-same-day-occurrences-${repeat.number}`}>
-                    {repeat.occurrences} times
-                  </span>
+                <div key={repeat.id} className="flex justify-between items-center py-2 border-b border-border last:border-0">
+                  <span className="text-lg font-bold stat-number" data-testid={`text-sameday-${repeat.number}`}>{repeat.number}</span>
+                  <span className="text-sm text-muted-foreground">{repeat.occurrences} times</span>
                 </div>
               ))}
             </div>
@@ -175,11 +112,11 @@ export default function RepeatsPage() {
         </Card>
       </div>
 
-      {/* Detailed Repeat History */}
+      {/* Recent Repeat Patterns Table */}
       <Card>
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <i className="fas fa-history text-primary"></i>
+            <Repeat className="w-6 h-6 text-primary" />
             Recent Repeat Patterns
           </h3>
           <div className="overflow-x-auto">
@@ -194,33 +131,51 @@ export default function RepeatsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {repeats.map(repeat => (
-                  <tr key={repeat.id} className="hover:bg-muted transition-colors" data-testid={`row-repeat-${repeat.number}`}>
-                    <td className="py-4 px-4">
-                      <span className="text-xl font-bold stat-number" data-testid={`text-table-number-${repeat.number}`}>
-                        {repeat.number}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className="font-semibold" data-testid={`text-table-pattern-${repeat.number}`}>
+                {repeats.slice(0, 20).map(repeat => {
+                  const getPatternTypeColor = () => {
+                    switch (repeat.patternType) {
+                      case 'weekly': return 'bg-blue-600';
+                      case 'consecutive': return 'bg-purple-600';
+                      case 'same_day': return 'bg-pink-600';
+                      default: return 'bg-gray-600';
+                    }
+                  };
+
+                  const getPatternTypeLabel = () => {
+                    switch (repeat.patternType) {
+                      case 'weekly': return 'Within 7 Days';
+                      case 'consecutive': return 'Back-to-Back';
+                      case 'same_day': return 'Same Day';
+                      default: return 'Unknown';
+                    }
+                  };
+
+                  return (
+                    <tr key={repeat.id} className="hover:bg-muted transition-colors" data-testid={`row-repeat-${repeat.number}`}>
+                      <td className="py-4 px-4">
+                        <span className="text-xl font-bold stat-number" data-testid={`text-number-${repeat.number}`}>
+                          {repeat.number}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-muted-foreground">
                         {repeat.description}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className="font-semibold text-blue-600" data-testid={`text-table-occurrences-${repeat.number}`}>
-                        {repeat.occurrences} hits
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 text-muted-foreground" data-testid={`text-table-date-range-${repeat.number}`}>
-                      {repeat.dateRange}
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className={`inline-block px-3 py-1 text-white rounded-full text-sm font-semibold ${getPatternColor(repeat.patternType)}`} data-testid={`status-table-${repeat.number}`}>
-                        {getPatternTitle(repeat.patternType)}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className="font-semibold text-blue-600" data-testid={`text-occurrences-${repeat.number}`}>
+                          {repeat.occurrences} hits
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-muted-foreground" data-testid={`text-daterange-${repeat.number}`}>
+                        {repeat.dateRange}
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className={`inline-block px-3 py-1 text-white rounded-full text-sm font-semibold ${getPatternTypeColor()}`} data-testid={`type-${repeat.number}`}>
+                          {getPatternTypeLabel()}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

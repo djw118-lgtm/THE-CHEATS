@@ -146,11 +146,12 @@ export class MemStorage implements IStorage {
         gameType,
         number,
         hitCount,
+        periodDays: daysActive,
         frequency,
         isActive: true,
         status,
-        lastHitDate: new Date(Date.now() - Math.floor(Math.random() * 3 * 24 * 60 * 60 * 1000)), // within last 3 days
-        drawType: Math.random() > 0.5 ? 'midday' : 'evening',
+        lastHit: new Date(Date.now() - Math.floor(Math.random() * 3 * 24 * 60 * 60 * 1000)), // within last 3 days
+        updatedAt: new Date(),
       };
       this.streaks.set(id, streak);
     }
@@ -167,12 +168,18 @@ export class MemStorage implements IStorage {
         : Math.floor(Math.random() * 1000).toString().padStart(3, '0');
       
       const patternType = patternTypes[Math.floor(Math.random() * patternTypes.length)];
-      const daysBetween = patternType === 'consecutive' ? 1 : 
-                          patternType === 'same_day' ? 0 : 
-                          Math.floor(Math.random() * 7) + 1; // 1-7 days for weekly
-      
       const occurrences = Math.floor(Math.random() * 5) + 2; // 2-6 occurrences
       const daysAgo = Math.floor(Math.random() * 30) + 1; // within last 30 days
+      
+      const endDate = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000);
+      const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+      const dateRange = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+      
+      const description = patternType === 'consecutive' 
+        ? 'Back-to-back draws'
+        : patternType === 'same_day'
+        ? 'Repeated on same day (Midday & Evening)'
+        : 'Within 7 days';
       
       const id = randomUUID();
       const repeat: RepeatAnalysis = {
@@ -181,9 +188,8 @@ export class MemStorage implements IStorage {
         number,
         patternType,
         occurrences,
-        lastOccurrence: new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000),
-        daysBetween,
-        drawType: Math.random() > 0.5 ? 'midday' : 'evening',
+        dateRange,
+        description,
         createdAt: new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000),
       };
       this.repeats.set(id, repeat);
