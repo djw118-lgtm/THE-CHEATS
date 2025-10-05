@@ -73,13 +73,13 @@ export default function CalculatorPage() {
               
               <div>
                 <label className="block text-sm font-semibold mb-2 text-muted-foreground">Game Type</label>
-                <div className="flex gap-2">
+                <div className="flex bg-muted rounded-lg p-1">
                   <button
                     onClick={() => setGameType('pick3')}
-                    className={`flex-1 py-3 rounded-lg font-semibold transition-all border-2 ${
+                    className={`flex-1 py-2 rounded font-semibold transition-all ${
                       gameType === 'pick3'
-                        ? 'bg-primary border-primary text-primary-foreground'
-                        : 'bg-muted border-border hover:border-primary text-foreground'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-foreground hover:text-primary'
                     }`}
                     data-testid="button-calc-pick3"
                   >
@@ -87,10 +87,10 @@ export default function CalculatorPage() {
                   </button>
                   <button
                     onClick={() => setGameType('pick4')}
-                    className={`flex-1 py-3 rounded-lg font-semibold transition-all border-2 ${
+                    className={`flex-1 py-2 rounded font-semibold transition-all ${
                       gameType === 'pick4'
-                        ? 'bg-primary border-primary text-primary-foreground'
-                        : 'bg-muted border-border hover:border-primary text-foreground'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'text-foreground hover:text-primary'
                     }`}
                     data-testid="button-calc-pick4"
                   >

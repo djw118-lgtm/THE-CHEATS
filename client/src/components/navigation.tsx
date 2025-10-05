@@ -116,16 +116,16 @@ export default function Navigation() {
       {/* Mobile Menu */}
       <div className={`mobile-menu md:hidden bg-muted border-t border-border ${isMobileMenuOpen ? 'open' : ''}`}>
         <div className="px-4 py-4 space-y-3">
-          <div className="flex gap-2 mb-3">
+          <div className="flex bg-muted rounded-lg p-1 mb-3">
             <button
               onClick={() => {
                 setGameType('pick3');
                 setIsMobileMenuOpen(false);
               }}
-              className={`flex-1 py-2 rounded font-semibold text-sm transition-colors ${
+              className={`flex-1 py-2 rounded font-semibold text-sm transition-all ${
                 gameType === 'pick3' 
                   ? 'bg-primary text-primary-foreground' 
-                  : 'bg-card text-foreground'
+                  : 'text-foreground hover:text-primary'
               }`}
               data-testid="button-mobile-pick3"
             >
@@ -136,10 +136,10 @@ export default function Navigation() {
                 setGameType('pick4');
                 setIsMobileMenuOpen(false);
               }}
-              className={`flex-1 py-2 rounded font-semibold text-sm transition-colors ${
+              className={`flex-1 py-2 rounded font-semibold text-sm transition-all ${
                 gameType === 'pick4' 
                   ? 'bg-primary text-primary-foreground' 
-                  : 'bg-card text-foreground'
+                  : 'text-foreground hover:text-primary'
               }`}
               data-testid="button-mobile-pick4"
             >
