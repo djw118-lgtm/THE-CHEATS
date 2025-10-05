@@ -115,7 +115,7 @@ export default function StreaksPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Period:</span>
-                  <span className="font-bold" data-testid={`text-period-${streak.number}`}>days</span>
+                  <span className="font-bold" data-testid={`text-period-${streak.number}`}>{streak.periodDays} days</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Frequency:</span>
