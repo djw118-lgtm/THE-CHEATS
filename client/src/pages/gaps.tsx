@@ -4,12 +4,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TrendingDown } from "lucide-react";
+import NumberDetailModal from "@/components/NumberDetailModal";
 
 export default function GapsPage() {
   const { gameType, gaps, stats, isLoading } = useLotteryData();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("days-desc");
   const [rangeFilter, setRangeFilter] = useState("all");
+  const [selectedGap, setSelectedGap] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleNumberClick = (gap: any) => {
+    setSelectedGap(gap);
+    setIsModalOpen(true);
+  };
 
   // Filter and sort gaps
   const filteredGaps = gaps
@@ -186,7 +194,12 @@ export default function GapsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {topDroughts.map((gap, index) => (
-                  <tr key={gap.id} className="hover:bg-muted transition-colors" data-testid={`row-drought-${gap.number}`}>
+                  <tr 
+                    key={gap.id} 
+                    onClick={() => handleNumberClick(gap)}
+                    className="hover:bg-muted transition-colors cursor-pointer" 
+                    data-testid={`row-drought-${gap.number}`}
+                  >
                     <td className="py-4 px-4">
                       <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
                         index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
@@ -231,6 +244,7 @@ export default function GapsPage() {
             {filteredGaps.slice(0, 40).map(gap => (
               <div
                 key={gap.id}
+                onClick={() => handleNumberClick(gap)}
                 className={`number-card p-3 rounded text-center font-bold stat-number cursor-pointer transition-all border ${
                   gap.status === 'critical' 
                     ? 'bg-red-600/20 border-red-600 hover:bg-red-600 hover:text-white' 
@@ -252,6 +266,17 @@ export default function GapsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Number Detail Modal */}
+      {selectedGap && (
+        <NumberDetailModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          number={selectedGap.number}
+          type="gap"
+          data={selectedGap}
+        />
+      )}
     </div>
   );
 }
