@@ -37,6 +37,8 @@ export default function StreaksPage() {
       }
     });
 
+  const topStreaks = filteredStreaks.slice(0, 10);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'hot': return 'bg-green-600';
@@ -46,6 +48,9 @@ export default function StreaksPage() {
     }
   };
 
+  const getStatusText = (status: string) => {
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
 
   if (isLoading) {
     return (
@@ -135,11 +140,11 @@ export default function StreaksPage() {
         </CardContent>
       </Card>
 
-      {/* Historical Analysis */}
+      {/* Top 10 Streaks */}
       <Card className="mb-8">
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-6 text-primary">
-            All Streaks Overview
+            Top 10 Longest Streaks
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -155,7 +160,7 @@ export default function StreaksPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filteredStreaks.map((streak, index) => (
+                {topStreaks.map((streak, index) => (
                   <tr 
                     key={streak.id} 
                     onClick={() => handleNumberClick(streak)}
@@ -170,31 +175,31 @@ export default function StreaksPage() {
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className="text-xl font-bold stat-number" data-testid={`text-table-number-${streak.number}`}>
+                      <span className="text-xl font-bold stat-number" data-testid={`text-number-${streak.number}`}>
                         {streak.number}
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className="font-semibold text-green-600" data-testid={`text-table-hits-${streak.number}`}>
+                      <span className="text-lg font-semibold text-green-600 stat-number" data-testid={`text-hits-${streak.number}`}>
                         {streak.hitCount} times
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className="font-semibold" data-testid={`text-table-period-${streak.number}`}>
+                      <span className="font-semibold" data-testid={`text-period-${streak.number}`}>
                         {streak.periodDays} days
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className="font-semibold" data-testid={`text-table-frequency-${streak.number}`}>
+                      <span className="font-semibold" data-testid={`text-frequency-${streak.number}`}>
                         {streak.frequency}
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-muted-foreground" data-testid={`text-table-last-hit-${streak.number}`}>
+                    <td className="py-4 px-4 text-muted-foreground" data-testid={`text-date-${streak.number}`}>
                       {new Date(streak.lastHit).toLocaleDateString()}
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`inline-block px-3 py-1 text-white rounded-full text-sm font-semibold ${getStatusColor(streak.status)}`} data-testid={`status-table-${streak.number}`}>
-                        {streak.isActive ? streak.status.charAt(0).toUpperCase() + streak.status.slice(1) : 'Ended'}
+                      <span className={`inline-block px-3 py-1 text-white rounded-full text-sm font-semibold ${getStatusColor(streak.status)}`} data-testid={`status-${streak.number}`}>
+                        {streak.isActive ? getStatusText(streak.status) : 'Ended'}
                       </span>
                     </td>
                   </tr>
@@ -205,25 +210,36 @@ export default function StreaksPage() {
         </CardContent>
       </Card>
 
-      {/* Recent Streaks Preview */}
+      {/* Number Grid Preview */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 text-primary">Recent Streaks Preview</h3>
-          <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
-            {filteredStreaks.slice(0, 40).map((streak) => (
+          <h3 className="text-xl font-bold mb-6 text-primary">
+            Recent Streaks Preview
+          </h3>
+          <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 gap-2 mb-6">
+            {filteredStreaks.slice(0, 40).map(streak => (
               <div
                 key={streak.id}
                 onClick={() => handleNumberClick(streak)}
-                className={`p-3 rounded-lg text-center cursor-pointer transition-all border-2 ${
-                  getStatusColor(streak.status)
-                } text-white font-bold hover:scale-105`}
-                data-testid={`box-streak-${streak.number}`}
+                className={`number-card p-3 rounded text-center font-bold stat-number cursor-pointer transition-all border ${
+                  streak.status === 'hot' 
+                    ? 'bg-green-600/20 border-green-600 hover:bg-green-600 hover:text-white' 
+                    : streak.status === 'warm'
+                    ? 'bg-yellow-600/20 border-yellow-600 hover:bg-yellow-600 hover:text-white'
+                    : 'bg-muted border-border hover:bg-primary hover:text-primary-foreground'
+                }`}
+                data-testid={`card-streak-${streak.number}`}
               >
                 {streak.number}
               </div>
             ))}
           </div>
-          <p className="text-sm text-muted-foreground mt-4">Showing {Math.min(filteredStreaks.length, 40)} of {filteredStreaks.length} hot streaks</p>
+          
+          <div className="text-center">
+            <p className="text-muted-foreground mb-4">
+              Showing {Math.min(40, filteredStreaks.length)} of {filteredStreaks.length} streaks
+            </p>
+          </div>
         </CardContent>
       </Card>
 
