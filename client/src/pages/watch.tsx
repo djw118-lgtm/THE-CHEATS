@@ -16,6 +16,8 @@ export default function WatchPage() {
 
   const pendingNumbers = watchNumbers.filter(n => !n.hasHit);
   const hitNumbers = watchNumbers.filter(n => n.hasHit);
+  const topWatch = watchNumbers.slice(0, 10);
+  
   const longestWait = pendingNumbers.reduce((max, current) => 
     (current.daysSince || 0) > (max.daysSince || 0) ? current : max, 
     pendingNumbers[0] || { daysSince: 0 } as any
@@ -23,6 +25,14 @@ export default function WatchPage() {
 
   const title = gameType === 'pick4' ? 'QUAD WATCH' : 'TRIPLE WATCH';
   const subtitle = gameType === 'pick4' ? 'Tracking quadruple digit patterns' : 'Tracking triple digit patterns';
+
+  const getStatusColor = (hasHit: boolean) => {
+    return hasHit ? 'bg-green-600' : 'bg-red-600';
+  };
+
+  const getStatusText = (hasHit: boolean) => {
+    return hasHit ? 'Hit' : 'Pending';
+  };
 
   if (isLoading) {
     return (
@@ -38,17 +48,17 @@ export default function WatchPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero Stats */}
-      <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-8 mb-8 shadow-2xl">
-        <div className="text-center text-primary-foreground">
+      <div className="bg-indigo-600 rounded-xl p-8 mb-8 shadow-2xl">
+        <div className="text-center text-white">
           <div className="flex items-center justify-center mb-4">
             <Eye className="w-16 h-16 md:w-20 md:h-20" />
           </div>
           <h2 className="text-3xl md:text-4xl font-bold mb-3" data-testid="text-watch-title">{title}</h2>
           <p className="text-lg md:text-xl mb-6 opacity-90" data-testid="text-watch-subtitle">{subtitle}</p>
-          <div className="text-5xl md:text-6xl font-bold stat-number mb-2" data-testid="text-total-patterns">
+          <div className="text-5xl md:text-6xl font-bold stat-number mb-2" data-testid="text-total-watch">
             {watchNumbers.length}
           </div>
-          <p className="text-lg opacity-90">Total {gameType === 'pick4' ? 'quads' : 'triples'} tracked</p>
+          <p className="text-lg opacity-90">Numbers being tracked</p>
         </div>
       </div>
 
@@ -57,68 +67,33 @@ export default function WatchPage() {
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-6 text-primary">Quick Stats</h3>
           <div className="space-y-4">
-            <div className="border-l-4 border-primary pl-4">
-              <p className="text-sm text-muted-foreground mb-1">Still Pending</p>
-              <p className="text-2xl font-bold stat-number" data-testid="text-pending-patterns">
-                {pendingNumbers.length} patterns
-              </p>
-            </div>
-            <div className="border-l-4 border-green-600 pl-4">
-              <p className="text-sm text-muted-foreground mb-1">Already Hit</p>
-              <p className="text-2xl font-bold stat-number" data-testid="text-hit-patterns">
-                {hitNumbers.length} patterns
-              </p>
-            </div>
             <div className="border-l-4 border-red-600 pl-4">
               <p className="text-sm text-muted-foreground mb-1">Longest Wait</p>
               <p className="text-2xl font-bold stat-number" data-testid="text-longest-wait">
-                {longestWait.daysSince || 0} days
+                {longestWait?.number || 'N/A'} - <span className="text-red-600">{longestWait?.daysSince || 0} days</span>
+              </p>
+            </div>
+            <div className="border-l-4 border-primary pl-4">
+              <p className="text-sm text-muted-foreground mb-1">Still Pending</p>
+              <p className="text-2xl font-bold stat-number" data-testid="text-pending">
+                {pendingNumbers.length} numbers
+              </p>
+            </div>
+            <div className="border-l-4 border-green-600 pl-4">
+              <p className="text-sm text-muted-foreground mb-1">Recently Hit</p>
+              <p className="text-2xl font-bold stat-number" data-testid="text-recent-hit">
+                {hitNumbers.length} numbers
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* All Patterns Grid */}
+      {/* Top 10 Watch Numbers */}
       <Card className="mb-8">
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-6 text-primary">
-            All {gameType === 'pick4' ? 'Quadruple' : 'Triple'} Patterns
-          </h3>
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
-            {watchNumbers.map(pattern => (
-              <div 
-                key={pattern.id}
-                onClick={() => handleNumberClick(pattern)}
-                className={`bg-muted rounded-lg p-4 border-2 transition-all number-card text-center cursor-pointer ${
-                  pattern.hasHit 
-                    ? 'border-green-600 hover:border-green-600' 
-                    : 'border-border hover:border-red-600'
-                }`}
-                data-testid={`card-pattern-${pattern.pattern}`}
-              >
-                <div className="text-3xl font-bold stat-number mb-2" data-testid={`text-pattern-number-${pattern.pattern}`}>
-                  {pattern.pattern}
-                </div>
-                <div className="text-sm text-muted-foreground mb-1" data-testid={`text-pattern-last-${pattern.pattern}`}>
-                  Last: {pattern.lastHitDate ? new Date(pattern.lastHitDate).toLocaleDateString() : 'Never'}
-                </div>
-                <span className={`inline-block px-2 py-1 rounded text-xs font-semibold text-white ${
-                  pattern.hasHit ? 'bg-green-600' : 'bg-red-600'
-                }`} data-testid={`status-pattern-${pattern.pattern}`}>
-                  {pattern.hasHit ? 'Hit' : 'Pending'}
-                </span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Detailed Analysis */}
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 text-primary">
-            Detailed History
+            Top 10 Watch List
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -126,19 +101,19 @@ export default function WatchPage() {
                 <tr className="border-b border-border">
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Rank</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Number</th>
-                  <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Status</th>
-                  <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Last Hit Date</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Days Since</th>
+                  <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Last Hit Date</th>
                   <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Draw Type</th>
+                  <th className="text-left py-3 px-4 text-muted-foreground font-semibold">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {watchNumbers.map((pattern, index) => (
+                {topWatch.map((watch, index) => (
                   <tr 
-                    key={pattern.id} 
-                    onClick={() => handleNumberClick(pattern)}
+                    key={watch.id} 
+                    onClick={() => handleNumberClick(watch)}
                     className="hover:bg-muted transition-colors cursor-pointer" 
-                    data-testid={`row-pattern-${pattern.pattern}`}
+                    data-testid={`row-watch-${watch.number}`}
                   >
                     <td className="py-4 px-4">
                       <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
@@ -148,30 +123,24 @@ export default function WatchPage() {
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className="text-xl font-bold stat-number" data-testid={`text-table-pattern-${pattern.pattern}`}>
-                        {pattern.pattern}
+                      <span className="text-xl font-bold stat-number" data-testid={`text-number-${watch.number}`}>
+                        {watch.number}
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold text-white ${
-                        pattern.hasHit ? 'bg-green-600' : 'bg-red-600'
-                      }`} data-testid={`status-table-${pattern.pattern}`}>
-                        {pattern.hasHit ? 'Hit' : 'Pending'}
+                      <span className={`text-lg font-semibold stat-number ${watch.hasHit ? 'text-green-600' : 'text-red-600'}`} data-testid={`text-days-${watch.number}`}>
+                        {watch.daysSince || 0} days
                       </span>
                     </td>
-                    <td className="py-4 px-4">
-                      <span className={`font-semibold ${!pattern.lastHitDate ? 'text-muted-foreground' : ''}`} data-testid={`text-table-date-${pattern.pattern}`}>
-                        {pattern.lastHitDate ? new Date(pattern.lastHitDate).toLocaleDateString() : 'Never'}
-                      </span>
+                    <td className="py-4 px-4 text-muted-foreground" data-testid={`text-date-${watch.number}`}>
+                      {watch.lastHitDate ? new Date(watch.lastHitDate).toLocaleDateString() : 'Never'}
+                    </td>
+                    <td className="py-4 px-4 text-muted-foreground">
+                      {watch.drawType || 'N/A'}
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`${pattern.hasHit ? 'text-muted-foreground' : 'text-red-600 font-semibold'}`} data-testid={`text-table-days-${pattern.pattern}`}>
-                        {pattern.daysSince ? `${pattern.daysSince} days ago` : '-'}
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <span className={`font-semibold ${!pattern.drawType ? 'text-muted-foreground' : ''}`} data-testid={`text-table-draw-type-${pattern.pattern}`}>
-                        {pattern.drawType ? pattern.drawType.charAt(0).toUpperCase() + pattern.drawType.slice(1) : '-'}
+                      <span className={`inline-block px-3 py-1 text-white rounded-full text-sm font-semibold ${getStatusColor(watch.hasHit)}`} data-testid={`status-${watch.number}`}>
+                        {getStatusText(watch.hasHit)}
                       </span>
                     </td>
                   </tr>
@@ -182,12 +151,43 @@ export default function WatchPage() {
         </CardContent>
       </Card>
 
+      {/* Number Grid Preview */}
+      <Card>
+        <CardContent className="p-6">
+          <h3 className="text-xl font-bold mb-6 text-primary">
+            Watch Numbers Preview
+          </h3>
+          <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 gap-2 mb-6">
+            {watchNumbers.map(watch => (
+              <div
+                key={watch.id}
+                onClick={() => handleNumberClick(watch)}
+                className={`number-card p-3 rounded text-center font-bold stat-number cursor-pointer transition-all border ${
+                  watch.hasHit
+                    ? 'bg-green-600/20 border-green-600 hover:bg-green-600 hover:text-white' 
+                    : 'bg-red-600/20 border-red-600 hover:bg-red-600 hover:text-white'
+                }`}
+                data-testid={`card-watch-${watch.number}`}
+              >
+                {watch.number}
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center">
+            <p className="text-muted-foreground mb-4">
+              Showing all {watchNumbers.length} watch numbers
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Number Detail Modal */}
       {selectedWatch && (
         <NumberDetailModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          number={selectedWatch.pattern}
+          number={selectedWatch.number}
           type="watch"
           data={selectedWatch}
         />
