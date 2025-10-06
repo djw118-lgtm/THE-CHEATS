@@ -37,6 +37,7 @@ export default function RepeatsPage() {
       }
     });
 
+  const topRepeats = filteredRepeats.slice(0, 10);
   const weeklyRepeats = repeats.filter(r => r.patternType === 'weekly');
   const consecutiveRepeats = repeats.filter(r => r.patternType === 'consecutive');
   const sameDayRepeats = repeats.filter(r => r.patternType === 'same_day');
@@ -47,6 +48,15 @@ export default function RepeatsPage() {
       case 'consecutive': return 'bg-purple-600';
       case 'same_day': return 'bg-pink-600';
       default: return 'bg-gray-600';
+    }
+  };
+
+  const getPatternTypeLabel = (patternType: string) => {
+    switch (patternType) {
+      case 'weekly': return 'Within 7 Days';
+      case 'consecutive': return 'Back-to-Back';
+      case 'same_day': return 'Same Day';
+      default: return 'Unknown';
     }
   };
 
@@ -132,11 +142,11 @@ export default function RepeatsPage() {
         </CardContent>
       </Card>
 
-      {/* Recent Repeat Patterns Table */}
+      {/* Top 10 Repeat Patterns */}
       <Card className="mb-8">
         <CardContent className="p-6">
           <h3 className="text-xl font-bold mb-6 text-primary">
-            Recent Repeat Patterns
+            Top 10 Longest Repeat Patterns
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -151,88 +161,79 @@ export default function RepeatsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {filteredRepeats.map((repeat, index) => {
-                  const getPatternTypeColor = () => {
-                    switch (repeat.patternType) {
-                      case 'weekly': return 'bg-blue-600';
-                      case 'consecutive': return 'bg-purple-600';
-                      case 'same_day': return 'bg-pink-600';
-                      default: return 'bg-gray-600';
-                    }
-                  };
-
-                  const getPatternTypeLabel = () => {
-                    switch (repeat.patternType) {
-                      case 'weekly': return 'Within 7 Days';
-                      case 'consecutive': return 'Back-to-Back';
-                      case 'same_day': return 'Same Day';
-                      default: return 'Unknown';
-                    }
-                  };
-
-                  return (
-                    <tr 
-                      key={repeat.id} 
-                      onClick={() => handleNumberClick(repeat)}
-                      className="hover:bg-muted transition-colors cursor-pointer" 
-                      data-testid={`row-repeat-${repeat.number}`}
-                    >
-                      <td className="py-4 px-4">
-                        <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
-                          index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
-                        }`}>
-                          {index + 1}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className="text-xl font-bold stat-number" data-testid={`text-number-${repeat.number}`}>
-                          {repeat.number}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-muted-foreground">
-                        {repeat.description}
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className="font-semibold text-blue-600" data-testid={`text-occurrences-${repeat.number}`}>
-                          {repeat.occurrences} hits
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-muted-foreground" data-testid={`text-daterange-${repeat.number}`}>
-                        {repeat.dateRange}
-                      </td>
-                      <td className="py-4 px-4">
-                        <span className={`inline-block px-3 py-1 text-white rounded-full text-sm font-semibold ${getPatternTypeColor()}`} data-testid={`type-${repeat.number}`}>
-                          {getPatternTypeLabel()}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {topRepeats.map((repeat, index) => (
+                  <tr 
+                    key={repeat.id} 
+                    onClick={() => handleNumberClick(repeat)}
+                    className="hover:bg-muted transition-colors cursor-pointer" 
+                    data-testid={`row-repeat-${repeat.number}`}
+                  >
+                    <td className="py-4 px-4">
+                      <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${
+                        index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
+                      }`}>
+                        {index + 1}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className="text-xl font-bold stat-number" data-testid={`text-number-${repeat.number}`}>
+                        {repeat.number}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 text-muted-foreground">
+                      {repeat.description}
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className="text-lg font-semibold text-purple-600 stat-number" data-testid={`text-occurrences-${repeat.number}`}>
+                        {repeat.occurrences} hits
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 text-muted-foreground" data-testid={`text-date-${repeat.number}`}>
+                      {repeat.dateRange}
+                    </td>
+                    <td className="py-4 px-4">
+                      <span className={`inline-block px-3 py-1 text-white rounded-full text-sm font-semibold ${getPatternTypeColor(repeat.patternType)}`} data-testid={`status-${repeat.number}`}>
+                        {getPatternTypeLabel(repeat.patternType)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </CardContent>
       </Card>
 
-      {/* Recent Repeats Preview */}
+      {/* Number Grid Preview */}
       <Card>
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold mb-6 text-primary">Recent Repeats Preview</h3>
-          <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
-            {filteredRepeats.slice(0, 40).map((repeat) => (
+          <h3 className="text-xl font-bold mb-6 text-primary">
+            Recent Repeats Preview
+          </h3>
+          <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 gap-2 mb-6">
+            {filteredRepeats.slice(0, 40).map(repeat => (
               <div
                 key={repeat.id}
                 onClick={() => handleNumberClick(repeat)}
-                className={`p-3 rounded-lg text-center cursor-pointer transition-all border-2 ${
-                  getPatternTypeColor(repeat.patternType)
-                } text-white font-bold hover:scale-105`}
-                data-testid={`box-repeat-${repeat.number}`}
+                className={`number-card p-3 rounded text-center font-bold stat-number cursor-pointer transition-all border ${
+                  repeat.patternType === 'weekly' 
+                    ? 'bg-blue-600/20 border-blue-600 hover:bg-blue-600 hover:text-white' 
+                    : repeat.patternType === 'consecutive'
+                    ? 'bg-purple-600/20 border-purple-600 hover:bg-purple-600 hover:text-white'
+                    : 'bg-pink-600/20 border-pink-600 hover:bg-pink-600 hover:text-white'
+                }`}
+                data-testid={`card-repeat-${repeat.number}`}
               >
                 {repeat.number}
               </div>
             ))}
           </div>
-          <p className="text-sm text-muted-foreground mt-4">Showing {Math.min(filteredRepeats.length, 40)} of {filteredRepeats.length} repeats</p>
+          
+          <div className="text-center">
+            <p className="text-muted-foreground mb-4">
+              Showing {Math.min(40, filteredRepeats.length)} of {filteredRepeats.length} repeats
+            </p>
+          </div>
         </CardContent>
       </Card>
 
