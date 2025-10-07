@@ -12,7 +12,6 @@ export default function AgeVerification({ onVerified }: AgeVerificationProps) {
   const [declined, setDeclined] = useState(false);
 
   useEffect(() => {
-    // Check if user has already verified their age
     const hasVerified = localStorage.getItem('age_verified');
     if (!hasVerified) {
       setShowModal(true);
@@ -99,19 +98,6 @@ export default function AgeVerification({ onVerified }: AgeVerificationProps) {
           )}
         </CardContent>
       </Card>
-    </div>
-  );
-}
-
-
-  if (!ageVerified) {
-    return <AgeVerification onVerified={() => setAgeVerified(true)} />;
-  }
-
-  return (
-    // Your normal app content here
-    <div>
-      {/* Your existing app code */}
     </div>
   );
 }
