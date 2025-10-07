@@ -102,13 +102,7 @@ export default function AgeVerification({ onVerified }: AgeVerificationProps) {
     </div>
   );
 }
-Now update your main App.tsx (or wherever your router is) to use this component:
-import { useState } from "react";
-import AgeVerification from "@/components/AgeVerification";
-// ... your other imports
 
-export default function App() {
-  const [ageVerified, setAgeVerified] = useState(false);
 
   if (!ageVerified) {
     return <AgeVerification onVerified={() => setAgeVerified(true)} />;
