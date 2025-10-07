@@ -11,7 +11,7 @@ import RepeatsPage from "@/pages/repeats";
 import WatchPage from "@/pages/watch";
 import CalculatorPage from "@/pages/calculator";
 import NotFound from "@/pages/not-found";
-import AgeVerification from "@/components/AgeVerification";
+import AgeVerification from "./components/AgeVerification";
 function Router() {
   return (
     <>
