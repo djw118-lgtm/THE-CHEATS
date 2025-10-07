@@ -30,6 +30,11 @@ function Router() {
 }
 
 function App() {
+  const [ageVerified, setAgeVerified] = useState(false);
+
+if (!ageVerified) {
+  return <AgeVerification onVerified={() => setAgeVerified(true)} />;
+}
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
